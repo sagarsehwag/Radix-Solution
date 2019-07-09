@@ -6,13 +6,12 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const router = express.Router();
 
-const { User, validateUser } = require("../models/UserModel");
+const { User, validateRegister } = require("../models/UserModel");
 const { adminAuth } = require("../middleware/auth");
 
 router.post("/", async (req, res, next) => {
 	const { username, password } = req.body;
 	const user = await User.findOne({ username });
-	console.log(user);
 
 	try {
 		// If User Exist
@@ -36,7 +35,7 @@ router.post("/", async (req, res, next) => {
 		const payload = { user: { id: user.id } };
 		jwt.sign(payload, config.get("jwtSecret"), { expiresIn: 360000 }, (err, token) => {
 			if (err) throw err;
-			res.json({
+			return res.json({
 				success: true,
 				message: "Successfully LoggedIn",
 				token
@@ -49,12 +48,14 @@ router.post("/", async (req, res, next) => {
 	}
 });
 
-router.post("/register", async (req, res, next) => {
+router.post("/register", adminAuth, async (req, res, next) => {
 	const { name, username, password, permission } = req.body;
 
 	// JOI Validation
-	const { error, value } = validateUser({ name, username, password });
-	if (error !== null) return res.status(400).json({ success: false, error });
+	const { error, value } = validateRegister({ name, username, password });
+	if (error !== null) {
+		return res.status(400).json({ success: false, message: error.details.message });
+	}
 
 	const user = await User.findOne({ username });
 
