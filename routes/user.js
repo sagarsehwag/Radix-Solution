@@ -2,21 +2,24 @@ const mongoose = require("mongoose");
 const express = require("express");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const router = express.Router();
 
-const errorHandler = require("../middleware/AsyncErrorHandlerWrapper");
 const { User, validateUser } = require("../models/UserModel");
+const { adminAuth } = require("../middleware/auth");
 
 router.post("/", async (req, res, next) => {
-	const { email, password } = req.body;
-	const user = User.findOne({ email });
+	const { username, password } = req.body;
+	const user = await User.findOne({ username });
+	console.log(user);
 
 	try {
 		// If User Exist
 		if (!user) {
 			return res.status(400).json({
 				success: false,
-				message: "Email - Does Not Exist"
+				message: "Username - Does Not Exist"
 			});
 		}
 
@@ -35,7 +38,7 @@ router.post("/", async (req, res, next) => {
 			if (err) throw err;
 			res.json({
 				success: true,
-				message: "Successfully Registered",
+				message: "Successfully LoggedIn",
 				token
 			});
 		});
@@ -47,20 +50,31 @@ router.post("/", async (req, res, next) => {
 });
 
 router.post("/register", async (req, res, next) => {
-	const { name, email, password, permission } = req.body;
-	const user = User.findOne({ email });
+	const { name, username, password, permission } = req.body;
+
+	// JOI Validation
+	const { error, value } = validateUser({ name, username, password });
+	if (error !== null) return res.status(400).json({ success: false, error });
+
+	const user = await User.findOne({ username });
 
 	try {
 		if (!user) {
 			// Encrypting Password
 			const salt = await bcrypt.genSalt(10);
-			password = await bcrypt.hash(password, salt);
+			const newPassword = await bcrypt.hash(password, salt);
 
 			// Saving New User
-			new User({ name, email, password, permission }).save();
+			const newUser = await new User({
+				name,
+				username,
+				password: newPassword,
+				permission
+			});
+			await newUser.save();
 
 			// JWT Logic
-			const payload = { user: { id: user.id } };
+			const payload = { user: { id: newUser.id } };
 			jwt.sign(payload, config.get("jwtSecret"), { expiresIn: 360000 }, (err, token) => {
 				if (err) throw err;
 				res.json({
@@ -78,6 +92,38 @@ router.post("/register", async (req, res, next) => {
 	} catch (error) {
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at '/auth/register'";
+		next(error);
+	}
+});
+
+router.post("/reset/password", adminAuth, async (req, res, next) => {
+	const { username, password } = req.body;
+	const user = await User.findOne({ username });
+
+	try {
+		if (user) {
+			// Encrypting Password
+			const salt = await bcrypt.genSalt(10);
+			const newPassword = await bcrypt.hash(password, salt);
+
+			// Changing Password
+			user.password = newPassword;
+			await user.save();
+
+			res.json({
+				success: true,
+				message: "Successfull Reset",
+				token
+			});
+		} else {
+			res.status(400).json({
+				success: false,
+				message: "User Does Not Exist"
+			});
+		}
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at '/auth/reset/password'";
 		next(error);
 	}
 });

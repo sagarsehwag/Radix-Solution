@@ -2,6 +2,9 @@ const express = require("express");
 
 const medicine = require("../routes/medicine");
 const operations = require("../routes/operations");
+const user = require("../routes/user");
+
+const { auth } = require("../middleware/auth");
 
 module.exports = async (app) => {
 	app.use(express.json());
