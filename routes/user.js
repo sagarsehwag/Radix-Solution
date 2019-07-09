@@ -97,7 +97,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 	}
 });
 
-router.post("/reset/password", adminAuth, async (req, res, next) => {
+router.put("/reset/password", adminAuth, async (req, res, next) => {
 	const { username, password } = req.body;
 	const user = await User.findOne({ username });
 
