@@ -4,16 +4,17 @@ const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+
 const router = express.Router();
 
 const { User, validateRegister } = require("../models/UserModel");
 const { adminAuth } = require("../middleware/auth");
 
 router.post("/", async (req, res, next) => {
-	const { username, password } = req.body;
-	const user = await User.findOne({ username });
-
 	try {
+		const { username, password } = req.body;
+		const user = await User.findOne({ username });
+
 		// If User Exist
 		if (!user) {
 			return res.status(400).json({
@@ -49,17 +50,15 @@ router.post("/", async (req, res, next) => {
 });
 
 router.post("/register", adminAuth, async (req, res, next) => {
-	const { name, username, password, permission } = req.body;
-
-	// JOI Validation
-	const { error, value } = validateRegister({ name, username, password });
-	if (error !== null) {
-		return res.status(400).json({ success: false, message: error.details.message });
-	}
-
-	const user = await User.findOne({ username });
-
 	try {
+		const { name, username, password, permission } = req.body;
+		const { error, value } = validateRegister({ name, username, password });
+		if (error !== null) {
+			return res.status(400).json({ success: false, message: error.details.message });
+		}
+
+		const user = await User.findOne({ username });
+
 		if (!user) {
 			// Encrypting Password
 			const salt = await bcrypt.genSalt(10);
@@ -98,10 +97,10 @@ router.post("/register", adminAuth, async (req, res, next) => {
 });
 
 router.put("/reset/password", adminAuth, async (req, res, next) => {
-	const { username, password } = req.body;
-	const user = await User.findOne({ username });
-
 	try {
+		const { username, password } = req.body;
+		const user = await User.findOne({ username });
+
 		if (user) {
 			// Encrypting Password
 			const salt = await bcrypt.genSalt(10);

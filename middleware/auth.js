@@ -6,9 +6,10 @@ const { User } = require("../models/UserModel");
 module.exports.auth = async (req, res, next) => {
 	const token = req.header("x-auth-token");
 	if (!token) {
-		return res
-			.status(401)
-			.json({ sucess: false, message: "No Token, Auhtorization Denied" });
+		return res.status(401).json({
+			sucess: false,
+			message: "No Token, Auhtorization Denied"
+		});
 	} else {
 		try {
 			// This verify function will throw an error if the token received is not valid

@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const router = express.Router();
 const Joi = require("joi");
+
+const router = express.Router();
+
 
 router.post("/", (req, res, next) => {
 	res.json({

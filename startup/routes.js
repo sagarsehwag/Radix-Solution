@@ -3,6 +3,7 @@ const express = require("express");
 const user = require("../routes/user");
 const medicine = require("../routes/medicine");
 const operations = require("../routes/operations");
+const employee = require("../routes/employee");
 const department = require("../routes/department");
 
 const { auth, adminAuth } = require("../middleware/auth");
@@ -12,6 +13,7 @@ module.exports = async (app) => {
 	app.use("/auth", user);
 	app.use("/medicine", auth, medicine);
 	app.use("/operations", auth, operations);
+	app.use("/employee", auth, employee);
 	app.use("/department", adminAuth, department);
 
 	// Error Handler

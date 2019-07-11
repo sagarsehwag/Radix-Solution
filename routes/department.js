@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
+
 const router = express.Router();
 
 const Department = require("../models/DepartmentModel");
@@ -15,6 +16,7 @@ router.post("/add", async (req, res, next) => {
 				.split(" ")
 				.join("-")
 				.toLowerCase();
+
 			const newDepartment = new Department({ name: newName, subDepartment: [] });
 			await newDepartment.save();
 
@@ -37,11 +39,17 @@ router.post("/add", async (req, res, next) => {
 
 router.delete("/delete", async (req, res, next) => {
 	try {
-		const { name } = req.body;
+		let { name } = req.body;
+		name = name
+			.split(" ")
+			.join("-")
+			.toLowerCase();
+
 		const department = await Department.findOne({ name });
 
 		if (department) {
 			const subDepartment = department.subDepartment;
+
 			// Deleting All The Subdepartments
 			subDepartment.map(async (id) => {
 				await SubDepartment.findByIdAndDelete(id);
@@ -69,7 +77,16 @@ router.delete("/delete", async (req, res, next) => {
 
 router.post("/subdepartment/add", async (req, res, next) => {
 	try {
-		const { subDepartmentName, departmentName } = req.body;
+		let { subDepartmentName, departmentName } = req.body;
+		subDepartmentName = subDepartmentName
+			.split(" ")
+			.join("-")
+			.toLowerCase();
+		departmentName = departmentName
+			.split(" ")
+			.join("-")
+			.toLowerCase();
+
 		const subDepartment = await SubDepartment.findOne({
 			name: subDepartmentName
 		});
