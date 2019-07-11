@@ -17,6 +17,12 @@ const employeeSchema = new Schema({
 			type: Schema.Types.ObjectId,
 			ref: "Department"
 		}
+	],
+	subDepartments: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "Department"
+		}
 	]
 });
 

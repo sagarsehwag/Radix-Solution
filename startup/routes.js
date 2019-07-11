@@ -1,16 +1,18 @@
 const express = require("express");
 
+const user = require("../routes/user");
 const medicine = require("../routes/medicine");
 const operations = require("../routes/operations");
-const user = require("../routes/user");
+const department = require("../routes/department");
 
-const { auth } = require("../middleware/auth");
+const { auth, adminAuth } = require("../middleware/auth");
 
 module.exports = async (app) => {
 	app.use(express.json());
 	app.use("/auth", user);
 	app.use("/medicine", auth, medicine);
 	app.use("/operations", auth, operations);
+	app.use("/department", adminAuth, department);
 
 	// Error Handler
 	app.use(async (err, req, res, next) => {

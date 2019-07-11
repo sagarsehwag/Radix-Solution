@@ -8,7 +8,11 @@ const subDepartmentSchema = new Schema({
 		minlength: 2,
 		maxlength: 20
 	},
-	subDepartment: [
+	department: {
+		type: Schema.Types.ObjectId,
+		ref: "Department"
+	},
+	employee: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: "Employee"
