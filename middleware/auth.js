@@ -13,9 +13,17 @@ module.exports.auth = async (req, res, next) => {
 	} else {
 		try {
 			// This verify function will throw an error if the token received is not valid
-			const decodedData = jwt.verify(token, config.get("jwtSecret"));
+			const decodedData = await jwt.verify(token, config.get("jwtSecret"));
 			req.user = decodedData.user;
 			req.user = await User.findById(req.user.id).select("-password -__v");
+
+			// If user does not exist anymore
+			if (!req.user) {
+				return res.status(401).json({
+					success: false,
+					message: "User does not exist anymore"
+				});
+			}
 
 			if (req.user.permission.admin) return next();
 
@@ -43,9 +51,17 @@ module.exports.adminAuth = async (req, res, next) => {
 	} else {
 		try {
 			// This verify function will throw an error if the token received is not valid
-			const decodedData = jwt.verify(token, config.get("jwtSecret"));
+			const decodedData = await jwt.verify(token, config.get("jwtSecret"));
 			req.user = decodedData.user;
 			req.user = await User.findById(req.user.id).select("-password -__v");
+
+			// If user does not exist anymore
+			if (!req.user) {
+				return res.status(401).json({
+					success: false,
+					message: "User does not exist anymore"
+				});
+			}
 
 			if (req.user.permission.admin) return next();
 

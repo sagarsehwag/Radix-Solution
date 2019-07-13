@@ -88,7 +88,7 @@ router.post("/subdepartment/add", async (req, res, next) => {
 			if (!subDepartment) {
 				const newSubDepartment = new SubDepartment({
 					name: subDepartmentName,
-					department: department.id,
+					department: departmentId,
 					employees: []
 				});
 				await newSubDepartment.save();
@@ -132,12 +132,10 @@ router.delete("/subdepartment/delete", async (req, res, next) => {
 			});
 		}
 
-		const { department, id: subDepartmentId } = deletedSubDepartment;
-		Department.findByIdAndUpdate(department, {
-			$pull: { subDepartments: subDepartmentId }
+		const { department } = deletedSubDepartment;
+		await Department.findByIdAndUpdate(department, {
+			$pull: { subDepartments: id }
 		});
-
-		Department.findByIdAndUpdate();
 
 		return res.json({ success: true, message: "Successfully Deleted" });
 	} catch (error) {
