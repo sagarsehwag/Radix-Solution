@@ -4,7 +4,6 @@ const Joi = require("joi");
 
 const router = express.Router();
 
-
 router.post("/", (req, res, next) => {
 	res.json({
 		success: true,

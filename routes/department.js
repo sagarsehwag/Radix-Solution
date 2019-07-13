@@ -17,7 +17,7 @@ router.post("/add", async (req, res, next) => {
 				.join("-")
 				.toLowerCase();
 
-			const newDepartment = new Department({ name: newName, subDepartment: [] });
+			const newDepartment = new Department({ name: newName, subDepartments: [] });
 			await newDepartment.save();
 
 			return res.json({
@@ -25,7 +25,7 @@ router.post("/add", async (req, res, next) => {
 				message: "Department Created, Now add subdeparments"
 			});
 		} else {
-			return res.json({
+			return res.status(401).json({
 				success: false,
 				message: "Department already exist"
 			});
@@ -39,31 +39,26 @@ router.post("/add", async (req, res, next) => {
 
 router.delete("/delete", async (req, res, next) => {
 	try {
-		let { name } = req.body;
-		name = name
-			.split(" ")
-			.join("-")
-			.toLowerCase();
-
-		const department = await Department.findOne({ name });
+		const { id } = req.body;
+		const department = await Department.findById(id);
 
 		if (department) {
-			const subDepartment = department.subDepartment;
+			const subDepartments = department.subDepartments;
 
 			// Deleting All The Subdepartments
-			subDepartment.map(async (id) => {
+			subDepartments.map(async (id) => {
 				await SubDepartment.findByIdAndDelete(id);
 			});
 
 			// Deleting Department
-			await Department.findByIdAndDelete(department._id);
+			await Department.findByIdAndDelete(id);
 
 			return res.json({
 				success: true,
 				message: "Department deleted"
 			});
 		} else {
-			return res.json({
+			return res.status(401).json({
 				success: false,
 				message: "Department does not exist"
 			});
@@ -77,48 +72,43 @@ router.delete("/delete", async (req, res, next) => {
 
 router.post("/subdepartment/add", async (req, res, next) => {
 	try {
-		let { subDepartmentName, departmentName } = req.body;
+		let { subDepartmentName, departmentId } = req.body;
 		subDepartmentName = subDepartmentName
 			.split(" ")
 			.join("-")
 			.toLowerCase();
-		departmentName = departmentName
-			.split(" ")
-			.join("-")
-			.toLowerCase();
 
+		const department = await Department.findById(departmentId);
 		const subDepartment = await SubDepartment.findOne({
-			name: subDepartmentName
+			name: subDepartmentName,
+			department: departmentId
 		});
 
-		const department = await Department.findOne({ name: departmentName });
-
 		if (department) {
-			if (!subDepartment || subDepartment.department === departmentName.id) {
+			if (!subDepartment) {
 				const newSubDepartment = new SubDepartment({
 					name: subDepartmentName,
 					department: department.id,
-					employee: []
+					employees: []
 				});
 				await newSubDepartment.save();
 
-				await Department.findOneAndUpdate(
-					{ _id: department.id },
-					{ $push: { subDepartment: newSubDepartment.id } }
-				);
+				await Department.findByIdAndUpdate(departmentId, {
+					$push: { subDepartments: newSubDepartment.id }
+				});
 
 				return res.json({
 					success: true,
 					message: "SubDepartment added"
 				});
 			} else {
-				return res.json({
+				return res.status(401).json({
 					success: false,
 					message: "SubDepartment already exist"
 				});
 			}
 		} else {
-			return res.json({
+			return res.status(401).json({
 				success: false,
 				message: "Department does not exist"
 			});
@@ -130,11 +120,31 @@ router.post("/subdepartment/add", async (req, res, next) => {
 	}
 });
 
-router.delete("/subdepartment/delete", (req, res, next) => {
-	res.json({
-		success: true,
-		message: "Successfull Access at /subdepartment/delete"
-	});
+router.delete("/subdepartment/delete", async (req, res, next) => {
+	try {
+		let { id } = req.body;
+		const deletedSubDepartment = await SubDepartment.findByIdAndDelete(id);
+
+		if (!deletedSubDepartment) {
+			return res.status(401).json({
+				success: false,
+				message: "ObjectId is not valid or SubDeparment does not exist"
+			});
+		}
+
+		const { department, id: subDepartmentId } = deletedSubDepartment;
+		Department.findByIdAndUpdate(department, {
+			$pull: { subDepartments: subDepartmentId }
+		});
+
+		Department.findByIdAndUpdate();
+
+		return res.json({ success: true, message: "Successfully Deleted" });
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at '/department/subdepartment/add'";
+		next(error);
+	}
 });
 
 module.exports = router;

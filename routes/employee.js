@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 
 const router = express.Router();
+const ObjectId = mongoose.Types.ObjectId;
 
 const SubDepartment = require("../models/SubDeparmentModel");
 const Department = require("../models/DepartmentModel");
@@ -26,21 +27,77 @@ router.get("/:EmployeeId", async (req, res, next) => {
 
 router.post("/add", async (req, res, next) => {
 	try {
-		const { name, gender, deparments, subDepartments } = req.body;
+		let { name, gender, departments, subDepartments } = req.body;
+		const deparmentArray = await Department.find({ _id: { $in: departments } });
 
-		const deparmentArray = Department.find({});
+		if (deparmentArray.length === departments.length) {
+			departments = departments.map((id) => {
+				return ObjectId(id);
+			});
+		} else {
+			return res.status(401).json({
+				success: false,
+				message: "departments array has invalid ObjectId's"
+			});
+		}
 
-		const newEmployee = new Employee({ name, gender, deparments, subDepartments });
+		const subDepartmentArray = await SubDepartment.find({
+			_id: { $in: subDepartments },
+			department: { $in: departments }
+		});
 
+		if (subDepartmentArray.length === subDepartments.length) {
+			subDepartments = subDepartments.map((id) => {
+				return ObjectId(id);
+			});
+		} else {
+			return res.status(401).json({
+				success: false,
+				message: "subDepartments array has invalid ObjectId's"
+			});
+		}
+
+		const newEmployee = new Employee({ name, gender, departments, subDepartments });
 		await newEmployee.save();
+
+		subDepartments.map(async (id) => {
+			await SubDepartment.findByIdAndUpdate(id, { $push: { employees: newEmployee.id } });
+		});
 
 		res.json({
 			success: true,
-			message: "Successfull Access at '/employee/add'"
+			message: "Successfully Created New Employee"
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at '/employee/add'";
+		next(error);
+	}
+});
+
+router.delete("/delete", async (req, res, next) => {
+	try {
+		const { id } = req.body;
+		const deletedEmployee = await Employee.findByIdAndDelete(id);
+
+		if (!deletedEmployee) {
+			return res.status(401).json({
+				success: false,
+				message: "ObjectId is not valid or Employee does not exist"
+			});
+		}
+
+		const { subDepartments } = deletedEmployee;
+
+		subDepartments.map(async (subDepartmentId) => {
+			await SubDepartment.findByIdAndUpdate(subDepartmentId, {
+				$pull: { employees: id }
+			});
+		});
+		return res.json({ success: true, message: "Successfully Deleted" });
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at '/employee/delete'";
 		next(error);
 	}
 });

@@ -6,13 +6,13 @@ const subDepartmentSchema = new Schema({
 		type: String,
 		required: true,
 		minlength: 2,
-		maxlength: 20
+		maxlength: 50
 	},
 	department: {
 		type: Schema.Types.ObjectId,
 		ref: "Department"
 	},
-	employee: [
+	employees: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: "Employee"
