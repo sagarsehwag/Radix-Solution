@@ -60,9 +60,10 @@ router.post("/add", async (req, res, next) => {
 		const newEmployee = new Employee({ name, gender, departments, subDepartments });
 		await newEmployee.save();
 
-		subDepartments.map(async (id) => {
-			await SubDepartment.findByIdAndUpdate(id, { $push: { employees: newEmployee.id } });
-		});
+		await SubDepartment.updateMany(
+			{ _id: { $in: subDepartments } },
+			{ $push: { employees: newEmployee.id } }
+		);
 
 		res.json({
 			success: true,
@@ -88,12 +89,11 @@ router.delete("/delete", async (req, res, next) => {
 		}
 
 		const { subDepartments } = deletedEmployee;
+		await SubDepartment.updateMany(
+			{ _id: { $in: subDepartments } },
+			{ $pull: { employees: id } }
+		);
 
-		subDepartments.map(async (subDepartmentId) => {
-			await SubDepartment.findByIdAndUpdate(subDepartmentId, {
-				$pull: { employees: id }
-			});
-		});
 		return res.json({ success: true, message: "Successfully Deleted" });
 	} catch (error) {
 		res.locals.statusCode = 500;
