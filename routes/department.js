@@ -17,7 +17,11 @@ router.post("/add", async (req, res, next) => {
 				.join("-")
 				.toLowerCase();
 
-			const newDepartment = new Department({ name: newName, subDepartments: [] });
+			const newDepartment = new Department({
+				name: newName,
+				label: name,
+				subDepartments: []
+			});
 			await newDepartment.save();
 
 			return res.json({
@@ -46,9 +50,7 @@ router.delete("/delete", async (req, res, next) => {
 			const subDepartments = department.subDepartments;
 
 			// Deleting All The Subdepartments
-			subDepartments.map(async (id) => {
-				await SubDepartment.findByIdAndDelete(id);
-			});
+			await SubDepartment.deleteMany({ _id: { $in: subDepartments } });
 
 			// Deleting Department
 			await Department.findByIdAndDelete(id);
@@ -73,6 +75,7 @@ router.delete("/delete", async (req, res, next) => {
 router.post("/subdepartment/add", async (req, res, next) => {
 	try {
 		let { subDepartmentName, departmentId } = req.body;
+		const label = subDepartmentName;
 		subDepartmentName = subDepartmentName
 			.split(" ")
 			.join("-")
@@ -89,7 +92,8 @@ router.post("/subdepartment/add", async (req, res, next) => {
 				const newSubDepartment = new SubDepartment({
 					name: subDepartmentName,
 					department: departmentId,
-					employees: []
+					employees: [],
+					label
 				});
 				await newSubDepartment.save();
 

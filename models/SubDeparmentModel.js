@@ -8,6 +8,12 @@ const subDepartmentSchema = new Schema({
 		minlength: 2,
 		maxlength: 50
 	},
+	label: {
+		type: String,
+		required: true,
+		minlength: 2,
+		maxlength: 50
+	},
 	department: {
 		type: Schema.Types.ObjectId,
 		ref: "Department"
