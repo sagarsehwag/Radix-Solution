@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
 		if (!user) {
 			return res.status(400).json({
 				success: false,
-				message: "Username - Does Not Exist"
+				message: "Username does not exist"
 			});
 		}
 
@@ -38,7 +38,7 @@ router.post("/", async (req, res, next) => {
 			if (err) throw err;
 			return res.json({
 				success: true,
-				message: "Successfully LoggedIn",
+				message: "Successfully Loggedin",
 				token
 			});
 		});
@@ -86,7 +86,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 		} else {
 			res.status(400).json({
 				success: false,
-				message: "User Already Registered"
+				message: "User already registered"
 			});
 		}
 	} catch (error) {
@@ -118,7 +118,7 @@ router.put("/reset/password", adminAuth, async (req, res, next) => {
 		} else {
 			res.status(400).json({
 				success: false,
-				message: "User Does Not Exist"
+				message: "User does not exist"
 			});
 		}
 	} catch (error) {

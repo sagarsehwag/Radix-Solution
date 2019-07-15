@@ -67,7 +67,7 @@ router.post("/add", async (req, res, next) => {
 
 		res.json({
 			success: true,
-			message: "Successfully Created New Employee"
+			message: "Successfully created new employee"
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
