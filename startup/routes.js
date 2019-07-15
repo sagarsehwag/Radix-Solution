@@ -1,5 +1,4 @@
 const express = require("express");
-const winston = require("winston");
 
 const user = require("../routes/user");
 const medicine = require("../routes/medicine");
@@ -23,7 +22,7 @@ module.exports = async (app) => {
 
 	// Global Error Handler
 	app.use(async (err, req, res, next) => {
-		winston.error(err.message, err);
+		logger.error(err.message, err);
 		res.status(res.locals.statusCode).json({
 			success: false,
 			message: res.locals.message
