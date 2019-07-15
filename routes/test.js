@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const winston = require("winston");
 
 const router = express.Router();
 const ObjectId = mongoose.Types.ObjectId;
@@ -10,16 +11,23 @@ const Employee = require("../models/EmployeeModel");
 const User = require("../models/UserModel");
 
 router.get("/", async (req, res, next) => {
-	const department = await Department.findOne(
-		{ name: "medicine" },
-		{ subDepartments: true }
-	);
+	try {
+		// const department = await Department.findOne(
+		// 	{ name: "medicine" },
+		// 	{ subDepartments: true }
+		// );
 
-	res.json({
-		success: true,
-		message: "Successfull Access at /test",
-		subDepartments: department.subDepartments
-	});
+		throw new Error("Fucking Error");
+
+		res.json({
+			success: true,
+			message: "Successfull Access at /test"
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at '/test'";
+		next(error);
+	}
 });
 
 module.exports = router;

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const config = require("config");
 
+const logger = require("../middleware/logger");
+
 module.exports = async () => {
 	try {
 		const mongoURI = config.get("mongoURI");
@@ -11,7 +13,7 @@ module.exports = async () => {
 		});
 		console.log("MongoDB Connected");
 	} catch (err) {
-		console.log(err.message);
+		logger.info(err.message, err);
 		// Exit Proccess with Failiure
 		process.exit(1);
 	}
