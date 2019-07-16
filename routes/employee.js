@@ -8,24 +8,56 @@ const SubDepartment = require("../models/SubDeparmentModel");
 const Department = require("../models/DepartmentModel");
 const Employee = require("../models/EmployeeModel");
 
-router.get("/:EmployeeId", async (req, res, next) => {
+// Fetch all employees
+router.get("/", async (req, res, next) => {
 	try {
-		const id = req.params.EmployeeId;
-		const employeeData = await Employee.findById(id);
-
-		res.json({
+		const employees = await Employee.find({}, { __v: false });
+		return res.json({
 			success: true,
-			message: "Successfull Access at '/employee'",
-			employeeData
+			message: "Successfully fetched all the employees",
+			employees
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/employee'";
+		res.locals.message = "Server Error at GET '/employee'";
 		next(error);
 	}
 });
 
-router.post("/add", async (req, res, next) => {
+router.get("/:employeeId", async (req, res, next) => {
+	try {
+		const id = req.params.employeeId;
+		const employeeData = await Employee.findById(id);
+
+		res.json({
+			success: true,
+			message: "Successfully fetched the employee",
+			employeeData
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at GET '/employee/:employeeId'";
+		next(error);
+	}
+});
+
+router.post("/many", async (req, res, next) => {
+	try {
+		const { employeeArray } = req.body;
+		const employees = Employee.find({ _id: { $in: employeeArray } }, { __v: false });
+		return res.json({
+			success: true,
+			message: "Successfully fetched all the employees",
+			employees
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at POST '/employee/many'";
+		next(error);
+	}
+});
+
+router.post("/", async (req, res, next) => {
 	try {
 		let { name, gender, departments, subDepartments } = req.body;
 		const deparmentArray = await Department.find({ _id: { $in: departments } });
@@ -71,12 +103,12 @@ router.post("/add", async (req, res, next) => {
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/employee/add'";
+		res.locals.message = "Server Error at POST '/employee'";
 		next(error);
 	}
 });
 
-router.delete("/delete", async (req, res, next) => {
+router.delete("/", async (req, res, next) => {
 	try {
 		const { id } = req.body;
 		const deletedEmployee = await Employee.findByIdAndDelete(id);
@@ -97,7 +129,7 @@ router.delete("/delete", async (req, res, next) => {
 		return res.json({ success: true, message: "Successfully Deleted" });
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/employee/delete'";
+		res.locals.message = "Server Error at DELETE '/employee'";
 		next(error);
 	}
 });

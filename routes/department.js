@@ -6,7 +6,41 @@ const router = express.Router();
 const Department = require("../models/DepartmentModel");
 const SubDepartment = require("../models/SubDeparmentModel");
 
-router.post("/add", async (req, res, next) => {
+// Fetch all departments
+router.get("/", async (req, res, next) => {
+	try {
+		const departments = await Department.find({}, { __v: false });
+		return res.json({
+			success: true,
+			message: "Successfully fetched all the departments",
+			departments
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at GET '/department'";
+		next(error);
+	}
+});
+
+// Fetch a department
+router.get("/:departmentId", async (req, res, next) => {
+	try {
+		const { departmentId } = req.params;
+		const department = await Department.findById(departmentId);
+		return res.json({
+			success: true,
+			message: "Successfully fetched the department",
+			department
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at GET '/department/:departmentId'";
+		next(error);
+	}
+});
+
+// Add Department
+router.post("/", async (req, res, next) => {
 	try {
 		const { name } = req.body;
 		const department = await Department.findOne({ name });
@@ -36,12 +70,13 @@ router.post("/add", async (req, res, next) => {
 		}
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/department/add'";
+		res.locals.message = "Server Error at POST '/department'";
 		next(error);
 	}
 });
 
-router.delete("/delete", async (req, res, next) => {
+// Delete Department
+router.delete("/", async (req, res, next) => {
 	try {
 		const { id } = req.body;
 		const department = await Department.findById(id);
@@ -67,12 +102,51 @@ router.delete("/delete", async (req, res, next) => {
 		}
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/department/add'";
+		res.locals.message = "Server Error at DELETE '/department'";
 		next(error);
 	}
 });
 
-router.post("/subdepartment/add", async (req, res, next) => {
+// Fetch a subdepartment
+router.get("/subdepartment/:subDepartmentId", async (req, res, next) => {
+	try {
+		const { subDepartmentId } = req.params;
+		const subDepartment = await SubDepartment.findById(subDepartmentId);
+		return res.json({
+			success: true,
+			message: "Successfully fetched the subdepartment",
+			subDepartment
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message =
+			"Server Error at GET '/department/subdepartment/:subDepartmentId'";
+		next(error);
+	}
+});
+
+// Fetch multiple subdepartments
+router.post("/subdepartment/many", async (req, res, next) => {
+	try {
+		const { subDepartmentsArray } = req.body;
+		const subDepartments = await SubDepartment.find(
+			{ _id: { $in: subDepartmentsArray } },
+			{ __v: false }
+		);
+		return res.json({
+			success: true,
+			message: "Successfully fetched all the subdepartments",
+			subDepartments
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at POST '/department/subdepartment/many'";
+		next(error);
+	}
+});
+
+// Add Subdepartment
+router.post("/subdepartment", async (req, res, next) => {
 	try {
 		let { subDepartmentName, departmentId } = req.body;
 		const label = subDepartmentName;
@@ -119,12 +193,13 @@ router.post("/subdepartment/add", async (req, res, next) => {
 		}
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/department/subdepartment/add'";
+		res.locals.message = "Server Error at POST '/department/subdepartment'";
 		next(error);
 	}
 });
 
-router.delete("/subdepartment/delete", async (req, res, next) => {
+// Delete Subdepartment
+router.delete("/subdepartment", async (req, res, next) => {
 	try {
 		let { id } = req.body;
 		const deletedSubDepartment = await SubDepartment.findByIdAndDelete(id);
@@ -144,7 +219,7 @@ router.delete("/subdepartment/delete", async (req, res, next) => {
 		return res.json({ success: true, message: "Successfully Deleted" });
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/department/subdepartment/add'";
+		res.locals.message = "Server Error at DELETE '/department/subdepartment'";
 		next(error);
 	}
 });

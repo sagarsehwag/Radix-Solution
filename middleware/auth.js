@@ -25,15 +25,7 @@ module.exports.auth = async (req, res, next) => {
 				});
 			}
 
-			if (req.user.permission.admin) return next();
-
-			if ((req.baseUrl = "/medicine" && req.user.permission.medicine)) return next();
-			if ((req.baseUrl = "/operations" && req.user.permission.operations)) return next();
-
-			return res.status(401).json({
-				success: false,
-				message: "You're not authorized"
-			});
+			next();
 		} catch (error) {
 			res.locals.statusCode = 401;
 			res.locals.message = "Your token is not valid";
