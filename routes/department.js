@@ -128,9 +128,9 @@ router.get("/subdepartment/:subDepartmentId", async (req, res, next) => {
 // Fetch multiple subdepartments
 router.post("/subdepartment/many", async (req, res, next) => {
 	try {
-		const { subDepartmentsArray } = req.body;
+		const { subDepartmentArray } = req.body;
 		const subDepartments = await SubDepartment.find(
-			{ _id: { $in: subDepartmentsArray } },
+			{ _id: { $in: subDepartmentArray } },
 			{ __v: false }
 		);
 		return res.json({
