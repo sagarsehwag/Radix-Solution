@@ -44,7 +44,7 @@ router.post("/", async (req, res, next) => {
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/auth'";
+		res.locals.message = "Server Error at POST '/auth'";
 		next(error);
 	}
 });
@@ -91,7 +91,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 		}
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/auth/register'";
+		res.locals.message = "Server Error at POST '/auth/register'";
 		next(error);
 	}
 });
@@ -123,7 +123,7 @@ router.put("/reset/password", adminAuth, async (req, res, next) => {
 		}
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/auth/reset/password'";
+		res.locals.message = "Server Error at PUT '/auth/reset/password'";
 		next(error);
 	}
 });
