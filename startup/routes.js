@@ -1,7 +1,6 @@
 const express = require("express");
 
 const user = require("../routes/user");
-const medicine = require("../routes/medicine");
 const logs = require("../routes/logs");
 const employee = require("../routes/employee");
 const department = require("../routes/department");
