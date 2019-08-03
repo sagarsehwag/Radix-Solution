@@ -10,6 +10,7 @@ const router = express.Router();
 const { User, validateRegister } = require("../models/UserModel");
 const { adminAuth } = require("../middleware/auth");
 
+// Login route
 router.post("/", async (req, res, next) => {
 	try {
 		const { username, password } = req.body;
@@ -49,6 +50,7 @@ router.post("/", async (req, res, next) => {
 	}
 });
 
+// Register route
 router.post("/register", adminAuth, async (req, res, next) => {
 	try {
 		const { name, username, password, permission } = req.body;
@@ -96,6 +98,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 	}
 });
 
+// Reset password
 router.put("/reset/password", adminAuth, async (req, res, next) => {
 	try {
 		const { username, password } = req.body;

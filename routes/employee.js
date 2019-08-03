@@ -24,6 +24,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
+// Fetch an employee
 router.get("/:employeeId", async (req, res, next) => {
 	try {
 		const id = req.params.employeeId;
@@ -41,6 +42,7 @@ router.get("/:employeeId", async (req, res, next) => {
 	}
 });
 
+// Fetch multiple employees
 router.post("/many", async (req, res, next) => {
 	try {
 		const { employeeArray } = req.body;
@@ -57,6 +59,7 @@ router.post("/many", async (req, res, next) => {
 	}
 });
 
+// Add an employee
 router.post("/", async (req, res, next) => {
 	try {
 		let { name, gender, departments, subDepartments } = req.body;
@@ -108,6 +111,7 @@ router.post("/", async (req, res, next) => {
 	}
 });
 
+// Delete an employee
 router.delete("/", async (req, res, next) => {
 	try {
 		const { id } = req.body;

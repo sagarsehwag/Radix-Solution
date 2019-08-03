@@ -9,6 +9,7 @@ const Log = require("../models/LogModel");
 
 const router = express.Router();
 
+// Fetch past records or logs
 router.get("/", async (req, res, next) => {
 	try {
 		const { department, page } = req.query;
@@ -25,6 +26,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
+// Add a log
 router.post("/", async (req, res, next) => {
 	try {
 		const {
