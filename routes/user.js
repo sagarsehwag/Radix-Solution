@@ -89,9 +89,12 @@ router.post("/register", adminAuth, async (req, res, next) => {
 			const payload = { user: { id: newUser.id } };
 			jwt.sign(payload, config.get("jwtSecret"), { expiresIn: 360000 }, (err, token) => {
 				if (err) throw err;
+				// Removing password from user object
+				newUser.password = newUser.__v = undefined;
 				res.json({
 					success: true,
 					message: "Successfully Registered",
+					user: newUser,
 					token
 				});
 			});
