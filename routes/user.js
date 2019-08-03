@@ -10,6 +10,13 @@ const router = express.Router();
 const { User, validateRegister } = require("../models/UserModel");
 const { adminAuth } = require("../middleware/auth");
 
+router.get("/", async (req, res, next) => {
+	res.json({
+		success: true,
+		message: "Yo Bitches, Successfull Access at GET '/auth'"
+	});
+});
+
 // Login route
 router.post("/", async (req, res, next) => {
 	try {
@@ -37,9 +44,12 @@ router.post("/", async (req, res, next) => {
 		const payload = { user: { id: user.id } };
 		jwt.sign(payload, config.get("jwtSecret"), { expiresIn: 360000 }, (err, token) => {
 			if (err) throw err;
+			// Removing password from user object
+			user.password = user.__v = undefined;
 			return res.json({
 				success: true,
 				message: "Successfully Loggedin",
+				user,
 				token
 			});
 		});
@@ -56,7 +66,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 		const { name, username, password, permission } = req.body;
 		const { error, value } = validateRegister({ name, username, password });
 		if (error !== null) {
-			return res.status(400).json({ success: false, message: error.details.message });
+			return res.status(400).json({ success: false, message: error.details });
 		}
 
 		const user = await User.findOne({ username });
