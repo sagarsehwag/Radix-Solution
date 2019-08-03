@@ -2,9 +2,13 @@ import React, { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 
-import Login from "./components/auth/Login";
 import Navbar from "./components/layout/Navbar";
+import Alert from "./components/layout/Alert";
+import Login from "./components/auth/Login";
 import store from "./store/store";
+
+import setAuthToken from "./utils/setAuthToken";
+setAuthToken();
 
 const App = () => {
 	return (
@@ -13,6 +17,7 @@ const App = () => {
 				<Fragment>
 					<Navbar />
 					<section className="container">
+						<Alert />
 						<Switch>
 							<Route exact path="/" component={Login} />
 						</Switch>
