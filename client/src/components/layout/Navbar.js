@@ -1,39 +1,61 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment } from "react";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-const Navbar = (props) => {
+import { logout } from "../../actions/auth";
+
+const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
+	const authLinks = (
+		<Fragment>
+			<Link to="/dashboard" className="nav-item nav-link">
+				<i className="fas fa-user mr-1" />
+				Dashboard
+			</Link>
+			<Link to="#" className="nav-item nav-link" onClick={() => logout(history)}>
+				<i className="fas fa-sign-out-alt mr-1" />
+				Logout
+			</Link>
+		</Fragment>
+	);
+
+	const guestLinks = (
+		<Fragment>
+			<Link to="#" className="nav-item nav-link">
+				Register
+			</Link>
+		</Fragment>
+	);
+
 	return (
-		<nav className="navbar navbar-light bg-light">
-			<a className="navbar-brand">Radix Solution</a>
-			<div className="collapse navbar-collapse">
-				<ul className="navbar-nav" id="navbarText">
-					<li className="nav-item">
-						<a className="nav-link" href="#">
-							Add Employee <span className="sr-only">(current)</span>
-						</a>
-					</li>
-					<li className="nav-item">
-						<a className="nav-link" href="#">
-							Add Logs
-						</a>
-					</li>
-					<li className="nav-item">
-						<a className="nav-link" href="#">
-							Pricing
-						</a>
-					</li>
-				</ul>
+		<nav className="navbar navbar-expand-lg navbar-light bg-white shadow mb-5">
+			<Link to="#" className="navbar-brand">
+				<img
+					src="https://radixhealthcare.org/logo_radix-02-04.png"
+					width="30"
+					height="30"
+					className="d-inline-block align-top mr-2"
+					alt=""
+				/>
+				Radix Solution
+			</Link>
+			<div className="collapse navbar-collapse" id="navbarSupportedContent">
+				<div className="navbar-nav ml-auto">
+					{/* {(isAuthenticated = true)}
+					{(loading = false)} */}
+					{!loading && isAuthenticated ? authLinks : guestLinks}
+				</div>
 			</div>
 		</nav>
 	);
 };
 
 const mapStateToProps = (state) => {
-	return {};
+	return {
+		auth: state.auth
+	};
 };
 
 export default connect(
 	mapStateToProps,
-	{}
-)(Navbar);
+	{ logout }
+)(withRouter(Navbar));

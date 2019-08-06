@@ -16,7 +16,7 @@ const App = () => {
 			<Router>
 				<Fragment>
 					<Navbar />
-					<section className="container">
+					<section className="container shadow rounded bg-white p-5">
 						<Alert />
 						<Switch>
 							<Route exact path="/" component={Login} />

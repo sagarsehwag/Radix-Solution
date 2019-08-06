@@ -9,7 +9,6 @@ import {
 	LOGIN_FAIL,
 	USER_LOADED,
 	AUTH_ERROR,
-	LOGIN_SUCCESS,
 	LOGOUT
 } from "./types";
 
@@ -48,10 +47,11 @@ export const login = (formData) => {
 	};
 };
 
-export const logout = () => {
+export const logout = (history) => {
 	return async (dispatch) => {
-		dispatch({ type: LOGOUT, payload: { user, token } });
+		dispatch({ type: LOGOUT });
 		dispatch(setAlert("You're logged out", "success"));
+		history.push("/");
 	};
 };
 
