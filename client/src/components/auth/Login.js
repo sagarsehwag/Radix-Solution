@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+
+import {} from "../../actions/auth";
+
 import "./Login.css";
 
-const Login = () => {
+const Login = ({ loadUser }) => {
 	const [formData, setFormData] = useState({ username: "", password: "" });
 
 	const { username, password } = formData;
@@ -18,7 +22,7 @@ const Login = () => {
 		<form id="loginform" onSubmit={(e) => onSubmit(e)}>
 			<div className="row">
 				<div className="input-field col s12">
-					<i class="material-icons prefix">account_circle</i>
+					<i className="material-icons prefix">account_circle</i>
 					<input
 						id="username"
 						type="text"
@@ -31,7 +35,7 @@ const Login = () => {
 			</div>
 			<div className="row">
 				<div className="input-field col s12">
-					<i class="material-icons prefix">vpn_key</i>
+					<i className="material-icons prefix">vpn_key</i>
 					<input
 						id="password"
 						type="password"
@@ -56,4 +60,11 @@ const Login = () => {
 	);
 };
 
-export default Login;
+const mapStateToProps = (state) => {
+	return {};
+};
+
+export default connect(
+	mapStateToProps,
+	{}
+)(Login);

@@ -4,20 +4,24 @@ import { connect } from "react-redux";
 
 const Navbar = (props) => {
 	return (
-		<nav>
-			<div className="nav-wrapper #0d47a1 blue darken-4">
-				<Link to="/" className="brand-logo">
-					Radix Solutions
-				</Link>
-				<ul id="nav-mobile" className="right hide-on-med-and-down">
-					<li>
-						<Link>Add Employee</Link>
+		<nav className="navbar navbar-light bg-light">
+			<a className="navbar-brand">Radix Solution</a>
+			<div className="collapse navbar-collapse">
+				<ul className="navbar-nav" id="navbarText">
+					<li className="nav-item">
+						<a className="nav-link" href="#">
+							Add Employee <span className="sr-only">(current)</span>
+						</a>
 					</li>
-					<li>
-						<Link>Add Data</Link>
+					<li className="nav-item">
+						<a className="nav-link" href="#">
+							Add Logs
+						</a>
 					</li>
-					<li>
-						<Link>JavaScript</Link>
+					<li className="nav-item">
+						<a className="nav-link" href="#">
+							Pricing
+						</a>
 					</li>
 				</ul>
 			</div>
