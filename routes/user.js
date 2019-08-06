@@ -8,12 +8,13 @@ const config = require("config");
 const router = express.Router();
 
 const { User, validateRegister } = require("../models/UserModel");
-const { adminAuth } = require("../middleware/auth");
+const { auth, adminAuth } = require("../middleware/auth");
 
 router.get("/", async (req, res, next) => {
 	res.json({
 		success: true,
-		message: "Yo Bitches, Successfull Access at GET '/auth'"
+		message: "Successfull User",
+		user: req.user
 	});
 });
 
