@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import Navbar from "./components/layout/Navbar";
 import Alert from "./components/layout/Alert";
 import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
 import store from "./store/store";
 
 import setAuthToken from "./utils/setAuthToken";
@@ -20,6 +21,7 @@ const App = () => {
 						<Alert />
 						<Switch>
 							<Route exact path="/" component={Login} />
+							<Route exact path="/register" component={Register} />
 						</Switch>
 					</section>
 				</Fragment>

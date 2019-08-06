@@ -20,7 +20,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 
 	const guestLinks = (
 		<Fragment>
-			<Link to="#" className="nav-item nav-link">
+			<Link to="/register" className="nav-item nav-link">
 				Register
 			</Link>
 		</Fragment>
@@ -28,7 +28,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 
 	return (
 		<nav className="navbar navbar-expand-lg navbar-light bg-white shadow mb-5">
-			<Link to="#" className="navbar-brand">
+			<Link to="/" className="navbar-brand">
 				<img
 					src="https://radixhealthcare.org/logo_radix-02-04.png"
 					width="30"
