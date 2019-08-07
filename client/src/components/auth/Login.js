@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 
 import { login } from "../../actions/auth";
 
-const Login = ({ login, auth: { loading, isAuthenticated } }) => {
+const Login = ({ login, isAuthenticated }) => {
 	const [formData, setFormData] = useState({ username: "", password: "" });
 
 	const { username, password } = formData;
@@ -19,9 +19,9 @@ const Login = ({ login, auth: { loading, isAuthenticated } }) => {
 
 	return (
 		<Fragment>
-			{!loading && isAuthenticated ? (
+			{isAuthenticated ? (
 				<Fragment>
-					<Redirect to="/dashboard" />
+					<Redirect to="/dashboard" />;
 				</Fragment>
 			) : (
 				<form onSubmit={(e) => onSubmit(e)}>
@@ -63,7 +63,7 @@ const Login = ({ login, auth: { loading, isAuthenticated } }) => {
 
 const mapStateToProps = (state) => {
 	return {
-		auth: state.auth
+		isAuthenticated: state.auth.isAuthenticated
 	};
 };
 

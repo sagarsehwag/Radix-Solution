@@ -55,7 +55,7 @@ module.exports.adminAuth = async (req, res, next) => {
 				});
 			}
 
-			if (req.user.permission.admin) return next();
+			if (req.user.permissions.includes("admin")) return next();
 
 			res.status(401).json({
 				success: false,

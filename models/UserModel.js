@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const config = require("config");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -22,20 +23,12 @@ const userSchema = new Schema({
 		minlength: 5,
 		maxlength: 1024
 	},
-	permission: {
-		admin: {
-			type: Boolean,
-			default: false
-		},
-		medicine: {
-			type: Boolean,
-			default: false
-		},
-		operations: {
-			type: Boolean,
-			default: false
+	permissions: [
+		{
+			type: String,
+			enum: config.get("permissions")
 		}
-	}
+	]
 });
 
 const User = mongoose.model("User", userSchema);

@@ -1,5 +1,10 @@
 {
 	"port": 5000,
 	"mongoURI": "mongodb://localhost:27017/radixsolution",
-	"jwtSecret": "mysecrettoken"
+	"jwtSecret": "mysecrettoken",
+	"permissions": [
+		"admin",
+		"medicine",
+		"operations"
+	]
 }

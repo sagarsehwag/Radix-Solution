@@ -62,9 +62,9 @@ router.post("/", async (req, res, next) => {
 });
 
 // Register route
-router.post("/register", adminAuth, async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
 	try {
-		const { name, username, password, permission } = req.body;
+		const { name, username, password, permissions } = req.body;
 		const { error, value } = validateRegister({ name, username, password });
 		if (error !== null) {
 			return res.status(400).json({ success: false, message: error.details });
@@ -82,7 +82,7 @@ router.post("/register", adminAuth, async (req, res, next) => {
 				name,
 				username,
 				password: newPassword,
-				permission
+				permissions
 			});
 			await newUser.save();
 
