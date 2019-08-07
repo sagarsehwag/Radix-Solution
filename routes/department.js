@@ -22,6 +22,26 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
+// Fetch multiple departments
+router.post("/many", async (req, res, next) => {
+	try {
+		const { departmentNames } = req.body;
+		const departments = await Department.find(
+			{ name: { $in: departmentNames } },
+			{ __v: false }
+		);
+		return res.json({
+			success: true,
+			message: "Successfully fetched multiple departments",
+			departments
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at POST '/department/many'";
+		next(error);
+	}
+});
+
 // Fetch a department
 router.get("/:departmentId", async (req, res, next) => {
 	try {
@@ -135,7 +155,7 @@ router.post("/subdepartment/many", async (req, res, next) => {
 		);
 		return res.json({
 			success: true,
-			message: "Successfully fetched all the subdepartments",
+			message: "Successfully fetched multiple subdepartments",
 			subDepartments
 		});
 	} catch (error) {
