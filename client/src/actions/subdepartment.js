@@ -9,7 +9,7 @@ export const loadSubDepartments = (subDepartmentArray) => {
 		try {
 			const {
 				data: { subDepartments }
-			} = await axios.get("/department/subdepartment/many", { subDepartmentArray });
+			} = await axios.post("/department/subdepartment/many", { subDepartmentArray });
 			dispatch({ type: GET_SUBDEPARTMENTS, payload: subDepartments });
 		} catch (error) {
 			dispatch({ type: CLEAR_SUBDEPARTMENT });
@@ -31,7 +31,7 @@ export const loadSubDepartment = (subDepartment) => {
 };
 
 // Clear subdepartment
-export const clearSubDepartment = (subDepartment) => {
+export const clearSubDepartment = () => {
 	return async (dispatch) => {
 		dispatch({ type: CLEAR_SUBDEPARTMENT });
 	};

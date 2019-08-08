@@ -46,13 +46,17 @@ router.get("/:employeeId", async (req, res, next) => {
 router.post("/many", async (req, res, next) => {
 	try {
 		const { employeeArray } = req.body;
-		const employees = Employee.find({ _id: { $in: employeeArray } }, { __v: false });
+		const employees = await Employee.find(
+			{ _id: { $in: employeeArray } },
+			{ __v: false }
+		);
 		return res.json({
 			success: true,
 			message: "Successfully fetched all the employees",
 			employees
 		});
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at POST '/employee/many'";
 		next(error);
