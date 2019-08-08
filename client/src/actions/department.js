@@ -2,27 +2,7 @@ import axios from "axios";
 import setAlert from "./alert";
 // import { checkAdmin } from "./auth";
 
-import {
-	GET_DEPARTMENT,
-	GET_DEPARTMENTS,
-	CLEAR_DEPARTMENT,
-	GET_ALL_DEPARTMENTS
-} from "./types";
-
-// Load all the departments
-export const loadAllDepartments = () => {
-	return async (dispatch) => {
-		try {
-			const {
-				data: { departments }
-			} = await axios.get("/department");
-			dispatch({ type: GET_ALL_DEPARTMENTS, payload: departments });
-		} catch (error) {
-			dispatch({ type: CLEAR_DEPARTMENT });
-			dispatch(setAlert(error.response.data.message, "danger"));
-		}
-	};
-};
+import { GET_DEPARTMENT, GET_DEPARTMENTS, CLEAR_DEPARTMENT } from "./types";
 
 // Load departments via permissions
 export const loadDepartments = (isAdmin, permissions) => {
