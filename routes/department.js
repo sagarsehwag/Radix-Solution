@@ -6,6 +6,8 @@ const router = express.Router();
 const Department = require("../models/DepartmentModel");
 const SubDepartment = require("../models/SubDeparmentModel");
 
+const { adminAuth } = require("../middleware/auth");
+
 // Fetch all departments
 router.get("/", async (req, res, next) => {
 	try {
@@ -60,7 +62,7 @@ router.get("/:departmentId", async (req, res, next) => {
 });
 
 // Add Department
-router.post("/", async (req, res, next) => {
+router.post("/", adminAuth, async (req, res, next) => {
 	try {
 		const { name } = req.body;
 		const department = await Department.findOne({ name });
@@ -96,7 +98,7 @@ router.post("/", async (req, res, next) => {
 });
 
 // Delete Department
-router.delete("/", async (req, res, next) => {
+router.delete("/", adminAuth, async (req, res, next) => {
 	try {
 		const { id } = req.body;
 		const department = await Department.findById(id);

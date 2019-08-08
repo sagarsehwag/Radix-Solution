@@ -10,7 +10,10 @@ import {
 	USER_LOADED,
 	AUTH_ERROR,
 	LOGOUT,
-	ADMIN
+	ADMIN,
+	CLEAR_DEPARTMENT,
+	CLEAR_SUBDEPARTMENT,
+	CLEAR_EMPLOYEE
 } from "./types";
 
 // Load User
@@ -26,9 +29,9 @@ export const loadUser = () => {
 				type: USER_LOADED,
 				payload: user
 			});
+			dispatch(checkAdmin());
 		} catch (error) {
 			dispatch({ type: AUTH_ERROR });
-			dispatch(setAlert(error.response.data.message, "danger"));
 		}
 	};
 };
@@ -41,6 +44,7 @@ export const login = (formData) => {
 			} = await axios.post("/auth", formData);
 
 			dispatch({ type: LOGIN_SUCCESS, payload: { user, token } });
+			dispatch(checkAdmin());
 		} catch (error) {
 			dispatch({ type: LOGIN_FAIL });
 			dispatch(setAlert(error.response.data.message, "danger"));
@@ -50,6 +54,9 @@ export const login = (formData) => {
 
 export const logout = (history) => {
 	return async (dispatch) => {
+		dispatch({ type: CLEAR_DEPARTMENT });
+		dispatch({ type: CLEAR_SUBDEPARTMENT });
+		dispatch({ type: CLEAR_EMPLOYEE });
 		dispatch({ type: LOGOUT });
 		dispatch(setAlert("You're logged out", "success"));
 		history.push("/");

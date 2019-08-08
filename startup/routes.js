@@ -15,7 +15,7 @@ module.exports = async (app) => {
 	app.use("/auth", user);
 	app.use("/logs", auth, logs);
 	app.use("/employee", auth, employee);
-	app.use("/department", adminAuth, department);
+	app.use("/department", auth, department);
 	app.use("/test", test);
 
 	// Global Error Handler

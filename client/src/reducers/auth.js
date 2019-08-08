@@ -9,6 +9,7 @@ import {
 	ACCOUNT_DELETED,
 	ADMIN
 } from "../actions/types";
+import setAuthToken from "../utils/setAuthToken";
 
 const initialState = {
 	token: localStorage.getItem("token"),
@@ -32,6 +33,7 @@ export default function(state = initialState, action) {
 		case REGISTER_SUCCESS:
 		case LOGIN_SUCCESS:
 			localStorage.setItem("token", payload.token);
+			setAuthToken();
 			return {
 				...state,
 				token: payload.token,
@@ -50,6 +52,7 @@ export default function(state = initialState, action) {
 				token: null,
 				user: null,
 				isAuthenticated: false,
+				isAdmin: false,
 				loading: false
 			};
 		case ADMIN:

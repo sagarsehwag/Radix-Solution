@@ -11,7 +11,7 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Log from "./components/log/Log";
 
-import { loadUser, checkAdmin } from "./actions/auth";
+import { loadUser } from "./actions/auth";
 
 import store from "./store/store";
 
@@ -21,7 +21,6 @@ setAuthToken();
 const App = () => {
 	useEffect(() => {
 		store.dispatch(loadUser());
-		store.dispatch(checkAdmin());
 	}, []);
 
 	return (

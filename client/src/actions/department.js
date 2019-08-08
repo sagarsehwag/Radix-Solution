@@ -1,5 +1,6 @@
 import axios from "axios";
 import setAlert from "./alert";
+// import { checkAdmin } from "./auth";
 
 import {
 	GET_DEPARTMENT,
@@ -31,6 +32,7 @@ export const loadDepartments = (isAdmin, permissions) => {
 				const {
 					data: { departments }
 				} = await axios.get("/department");
+				console.log(departments);
 				dispatch({ type: GET_DEPARTMENTS, payload: departments });
 			} else {
 				const {
@@ -39,6 +41,7 @@ export const loadDepartments = (isAdmin, permissions) => {
 				dispatch({ type: GET_DEPARTMENTS, payload: departments });
 			}
 		} catch (error) {
+			console.log(error.response);
 			dispatch({ type: CLEAR_DEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));
 		}
