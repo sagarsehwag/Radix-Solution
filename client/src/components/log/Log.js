@@ -31,10 +31,6 @@ const Log = ({
 		if (!loading && user !== null) loadDepartments(isAdmin, user.permissions);
 	}, [loadDepartments, auth]);
 
-	const onChange = (e) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
-	};
-
 	// After selecting department
 	useEffect(() => {
 		let department = departments.filter((department) => department._id === departmentId);
@@ -53,6 +49,10 @@ const Log = ({
 			loadEmployees(subDepartment[0].employees);
 		}
 	}, [subDepartmentId, subDepartments, loadSubDepartment, loadEmployees]);
+
+	const onChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
 
 	if (loading) {
 		return <Spinner />;

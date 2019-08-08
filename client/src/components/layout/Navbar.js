@@ -40,8 +40,6 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, history }) => {
 			</Link>
 			<div className="collapse navbar-collapse" id="navbarSupportedContent">
 				<div className="navbar-nav ml-auto">
-					{/* {(isAuthenticated = true)}
-					{(loading = false)} */}
 					{!loading && isAuthenticated ? authLinks : guestLinks}
 				</div>
 			</div>
