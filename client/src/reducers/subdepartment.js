@@ -1,4 +1,8 @@
-import { GET_SUBDEPARTMENT, GET_SUBDEPARTMENTS } from "../actions/types";
+import {
+	GET_SUBDEPARTMENT,
+	GET_SUBDEPARTMENTS,
+	CLEAR_SUBDEPARTMENT
+} from "../actions/types";
 
 const initialState = {
 	subDepartment: null,

@@ -15,7 +15,6 @@ export const loadAllDepartments = () => {
 			const {
 				data: { departments }
 			} = await axios.get("/department");
-
 			dispatch({ type: GET_ALL_DEPARTMENTS, payload: departments });
 		} catch (error) {
 			dispatch({ type: CLEAR_DEPARTMENT });
@@ -25,21 +24,18 @@ export const loadAllDepartments = () => {
 };
 
 // Load departments via permissions
-export const loadDepartments = (permissions, allDepartments = []) => {
+export const loadDepartments = (isAdmin, permissions) => {
 	return async (dispatch) => {
 		try {
-			let isAdmin = false;
-			for (val in permissions) {
-				if (val == "admin") isAdmin = true;
-			}
-
 			if (isAdmin) {
-				dispatch({ type: GET_DEPARTMENTS, payload: allDepartments });
+				const {
+					data: { departments }
+				} = await axios.get("/department");
+				dispatch({ type: GET_DEPARTMENTS, payload: departments });
 			} else {
 				const {
 					data: { departments }
-				} = await axios.get("/department/many", { departmentNames: permissions });
-
+				} = await axios.post("/department/many", { departmentNames: permissions });
 				dispatch({ type: GET_DEPARTMENTS, payload: departments });
 			}
 		} catch (error) {

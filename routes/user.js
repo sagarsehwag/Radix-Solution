@@ -10,11 +10,20 @@ const router = express.Router();
 const { User, validateRegister } = require("../models/UserModel");
 const { auth, adminAuth } = require("../middleware/auth");
 
-router.get("/", async (req, res, next) => {
+// Fetch user
+router.get("/", auth, async (req, res, next) => {
 	res.json({
 		success: true,
 		message: "Successfull User",
 		user: req.user
+	});
+});
+
+router.get("/isadmin", adminAuth, async (req, res, next) => {
+	res.json({
+		success: true,
+		message: "Successfull User",
+		isAdmin: true
 	});
 });
 

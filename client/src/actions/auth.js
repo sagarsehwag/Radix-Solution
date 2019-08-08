@@ -9,7 +9,8 @@ import {
 	LOGIN_FAIL,
 	USER_LOADED,
 	AUTH_ERROR,
-	LOGOUT
+	LOGOUT,
+	ADMIN
 } from "./types";
 
 // Load User
@@ -66,6 +67,19 @@ export const register = (formData) => {
 		} catch (error) {
 			dispatch({ type: REGISTER_FAIL });
 			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+export const checkAdmin = () => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { isAdmin }
+			} = await axios.get("/auth/isadmin");
+			dispatch({ type: ADMIN, payload: isAdmin });
+		} catch (error) {
+			dispatch({ type: ADMIN, payload: false });
 		}
 	};
 };

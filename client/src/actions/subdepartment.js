@@ -12,7 +12,7 @@ export const loadSubDepartments = (subDepartmentArray) => {
 			} = await axios.get("/department/subdepartment/many", { subDepartmentArray });
 			dispatch({ type: GET_SUBDEPARTMENTS, payload: subDepartments });
 		} catch (error) {
-			dispatch({ type: CLEAR_DEPARTMENT });
+			dispatch({ type: CLEAR_SUBDEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));
 		}
 	};
@@ -24,15 +24,15 @@ export const loadSubDepartment = (subDepartment) => {
 		try {
 			dispatch({ type: GET_SUBDEPARTMENT, payload: subDepartment });
 		} catch (error) {
-			dispatch({ type: CLEAR_DEPARTMENT });
+			dispatch({ type: CLEAR_SUBDEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));
 		}
 	};
 };
 
 // Clear subdepartment
-export const loadSubDepartment = (subDepartment) => {
+export const clearSubDepartment = (subDepartment) => {
 	return async (dispatch) => {
-		dispatch({ type: CLEAR_DEPARTMENT });
+		dispatch({ type: CLEAR_SUBDEPARTMENT });
 	};
 };

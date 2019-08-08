@@ -6,13 +6,15 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT,
-	ACCOUNT_DELETED
+	ACCOUNT_DELETED,
+	ADMIN
 } from "../actions/types";
 
 const initialState = {
 	token: localStorage.getItem("token"),
 	user: null,
 	isAuthenticated: false,
+	isAdmin: false,
 	loading: true
 };
 
@@ -49,6 +51,11 @@ export default function(state = initialState, action) {
 				user: null,
 				isAuthenticated: false,
 				loading: false
+			};
+		case ADMIN:
+			return {
+				...state,
+				isAdmin: payload
 			};
 		default:
 			return state;

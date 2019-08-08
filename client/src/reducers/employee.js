@@ -1,4 +1,4 @@
-import { GET_EMPLOYEE, GET_EMPLOYEES } from "../actions/types";
+import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE } from "../actions/types";
 
 const initialState = {
 	employee: null,
