@@ -10,6 +10,8 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Log from "./components/log/Log";
+import AddDepartment from "./components/forms/AddDepartment";
+import AddSubDepartment from "./components/forms/AddSubDepartment";
 
 import { loadUser } from "./actions/auth";
 
@@ -36,8 +38,9 @@ const App = () => {
 							<Route exact path="/register" component={Register} />
 							<PrivateRoute exact path="/dashboard" component={Dashboard} />
 							<PrivateRoute exact path="/log" component={Log} />
-							{/* <PrivateRoute exact path="/employee" component={Log} />
-							<PrivateRoute exact path="/subdepartment" component={Log} /> */}
+							<PrivateRoute exact path="/department" component={AddDepartment} />
+							<PrivateRoute exact path="/subdepartment" component={AddSubDepartment} />
+							{/* <PrivateRoute exact path="/employee" component={Log} />} */}
 						</Switch>
 					</section>
 				</Fragment>

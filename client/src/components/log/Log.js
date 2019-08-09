@@ -14,9 +14,9 @@ const Log = ({
 	loadSubDepartments,
 	loadEmployee,
 	loadEmployees,
-	department: { department, departments, loading },
-	subdepartment: { subDepartment, subDepartments },
-	employee: { employee, employees },
+	department: { departments, loading },
+	subdepartment: { subDepartments },
+	employee: { employees },
 	auth
 }) => {
 	const [formData, setFormData] = useState({
@@ -59,6 +59,12 @@ const Log = ({
 		}
 	}, [subDepartmentId, subDepartments, loadSubDepartment, loadEmployees]);
 
+	// After selecting employee
+	useEffect(() => {
+		let employee = employees.filter((emp) => emp._id === employeeId);
+		if (employee.length > 0) loadEmployee(employee[0]);
+	}, [employeeId, employees, loadEmployee]);
+
 	const onChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
@@ -68,8 +74,6 @@ const Log = ({
 	} else {
 		return (
 			<Fragment>
-				<h1 className="mb-5">Add Logs</h1>
-
 				<form action="">
 					<div className="form-group row">
 						<label htmlFor="departmentField" className="col-2 col-form-label">
