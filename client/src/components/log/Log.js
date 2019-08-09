@@ -22,9 +22,19 @@ const Log = ({
 	const [formData, setFormData] = useState({
 		departmentId: "",
 		subDepartmentId: "",
-		employeeId: ""
+		employeeId: "",
+		testCases: "",
+		tentativeRevenue: "",
+		conversionRatio: ""
 	});
-	const { departmentId, subDepartmentId, employeeId } = formData;
+	const {
+		departmentId,
+		subDepartmentId,
+		employeeId,
+		testCases,
+		tentativeRevenue,
+		conversionRatio
+	} = formData;
 
 	useEffect(() => {
 		const { loading, isAdmin, user } = auth;
@@ -44,7 +54,6 @@ const Log = ({
 	useEffect(() => {
 		let subDepartment = subDepartments.filter((sub) => sub._id === subDepartmentId);
 		if (subDepartment.length > 0) {
-			console.log(subDepartment[0].employees);
 			loadSubDepartment(subDepartment[0]);
 			loadEmployees(subDepartment[0].employees);
 		}
@@ -95,9 +104,7 @@ const Log = ({
 							value={subDepartmentId}
 							onChange={(e) => onChange(e)}
 						>
-							<option value>
-								{subDepartments.length === 0 ? "loading" : "Choose a subdepartment"}
-							</option>
+							<option value>Choose a subdepartment</option>
 							{subDepartments.map(({ label, _id }, index) => (
 								<option value={_id} key={index}>
 									{label}
@@ -112,14 +119,13 @@ const Log = ({
 						</label>
 						<select
 							className="custom-select col"
-							id="employeeId"
+							id="employeeField"
+							name="employeeId"
 							required
 							value={employeeId}
 							onChange={(e) => onChange(e)}
 						>
-							<option value>
-								{employees.length === 0 ? "loading" : "Choose an employee"}
-							</option>
+							<option value> Choose an employee</option>
 							{employees.map(({ name, _id }, index) => (
 								<option value={_id} key={index}>
 									{name}
@@ -132,21 +138,45 @@ const Log = ({
 						<label htmlFor="numberOfTestCases" className="col-2 col-form-label">
 							Test Cases
 						</label>
-						<input type="number" className="form-control col" id="numberOfTestCases" />
+						<input
+							type="number"
+							placeholder="Enter number of test cases"
+							className="form-control col"
+							id="numberOfTestCases"
+							name="testCases"
+							value={testCases}
+							onChange={(e) => onChange(e)}
+						/>
 					</div>
 
 					<div className="form-group row">
 						<label htmlFor="tentativeRevenue" className="col-2 col-form-label">
 							Tentative Revenue
 						</label>
-						<input type="number" className="form-control col" id="tentativeRevenue" />
+						<input
+							type="number"
+							placeholder="Enter tentative revenue"
+							className="form-control col"
+							id="tentativeRevenue"
+							name="tentativeRevenue"
+							value={tentativeRevenue}
+							onChange={(e) => onChange(e)}
+						/>
 					</div>
 
 					<div className="form-group row">
 						<label htmlFor="conversionRatio" className="col-2 col-form-label">
 							Conversion Ratio
 						</label>
-						<input type="number" className="form-control col" id="conversionRatio" />
+						<input
+							type="number"
+							placeholder="Enter conversion ratio"
+							className="form-control col"
+							id="conversionRatio"
+							name="conversionRatio"
+							value={conversionRatio}
+							onChange={(e) => onChange(e)}
+						/>
 					</div>
 
 					<button type="submit" className="btn btn-primary">

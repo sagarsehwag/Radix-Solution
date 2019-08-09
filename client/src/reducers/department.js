@@ -1,9 +1,4 @@
-import {
-	GET_DEPARTMENT,
-	GET_DEPARTMENTS,
-	GET_ALL_DEPARTMENTS,
-	CLEAR_DEPARTMENT
-} from "../actions/types";
+import { GET_DEPARTMENT, GET_DEPARTMENTS, CLEAR_DEPARTMENT } from "../actions/types";
 
 const initialState = {
 	department: null,
