@@ -1,4 +1,4 @@
-# DevConnector
+# RadixSolution
 
 Hospital Management System using Node, Express, MongoDB, Mongoose, JWT, React, React-Router, Redux, Redux-Thunk, Axios & Bootstrap
 
