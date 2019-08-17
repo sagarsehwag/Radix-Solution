@@ -46,7 +46,7 @@ const Log = ({
 		let department = departments.filter((department) => department._id === departmentId);
 		if (department.length > 0) {
 			loadDepartment(department[0]);
-			loadSubDepartments(department[0].subDepartments);
+			loadSubDepartments(departmentId);
 		}
 	}, [departmentId, loadSubDepartments, departments, loadDepartment]);
 
@@ -55,7 +55,7 @@ const Log = ({
 		let subDepartment = subDepartments.filter((sub) => sub._id === subDepartmentId);
 		if (subDepartment.length > 0) {
 			loadSubDepartment(subDepartment[0]);
-			loadEmployees(subDepartment[0].employees);
+			loadEmployees(subDepartmentId);
 		}
 	}, [subDepartmentId, subDepartments, loadSubDepartment, loadEmployees]);
 
@@ -183,9 +183,11 @@ const Log = ({
 						/>
 					</div>
 
-					<button type="submit" className="btn btn-primary">
-						Submit
-					</button>
+					<div className="row">
+						<button type="submit" className="btn btn-primary col ml-3">
+							Submit
+						</button>
+					</div>
 				</form>
 			</Fragment>
 		);

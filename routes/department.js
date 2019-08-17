@@ -11,7 +11,7 @@ const { adminAuth } = require("../middleware/auth");
 // Fetch all departments
 router.get("/", async (req, res, next) => {
 	try {
-		const departments = await Department.find({}, { __v: false });
+		const departments = await Department.find({}, { __v: false, subDepartments: false });
 		return res.json({
 			success: true,
 			message: "Successfully fetched all the departments",
@@ -30,7 +30,7 @@ router.post("/many", async (req, res, next) => {
 		const { departmentNames } = req.body;
 		const departments = await Department.find(
 			{ name: { $in: departmentNames } },
-			{ __v: false }
+			{ __v: false, subDepartments: false }
 		);
 		return res.json({
 			success: true,
@@ -150,11 +150,13 @@ router.get("/subdepartment/:subDepartmentId", async (req, res, next) => {
 // Fetch multiple subdepartments
 router.post("/subdepartment/many", async (req, res, next) => {
 	try {
-		const { subDepartmentArray } = req.body;
+		const { departmentId } = req.body;
+		const department = await Department.findById(departmentId);
 		const subDepartments = await SubDepartment.find(
-			{ _id: { $in: subDepartmentArray } },
-			{ __v: false }
+			{ _id: { $in: department.subDepartments } },
+			{ __v: false, employees: false }
 		);
+
 		return res.json({
 			success: true,
 			message: "Successfully fetched multiple subdepartments",
@@ -162,7 +164,7 @@ router.post("/subdepartment/many", async (req, res, next) => {
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at POST '/department/subdepartment/many'";
+		res.locals.message = "Server Error at GET '/department/subdepartment/:departmentId'";
 		next(error);
 	}
 });

@@ -4,12 +4,12 @@ import setAlert from "./alert";
 import { GET_SUBDEPARTMENT, GET_SUBDEPARTMENTS, CLEAR_SUBDEPARTMENT } from "./types";
 
 // Load all the subdepartments
-export const loadSubDepartments = (subDepartmentArray) => {
+export const loadSubDepartments = (departmentId) => {
 	return async (dispatch) => {
 		try {
 			const {
 				data: { subDepartments }
-			} = await axios.post("/department/subdepartment/many", { subDepartmentArray });
+			} = await axios.post("/department/subdepartment/many", { departmentId });
 			dispatch({ type: GET_SUBDEPARTMENTS, payload: subDepartments });
 		} catch (error) {
 			dispatch({ type: CLEAR_SUBDEPARTMENT });

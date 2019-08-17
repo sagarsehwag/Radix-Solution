@@ -4,13 +4,12 @@ import setAlert from "./alert";
 import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE } from "./types";
 
 // Load all the subdepartments
-export const loadEmployees = (employeeArray) => {
+export const loadEmployees = (subDepartmentId) => {
 	return async (dispatch) => {
 		try {
-			console.log(employeeArray);
 			const {
 				data: { employees }
-			} = await axios.post("/employee/many", { employeeArray });
+			} = await axios.post("/employee/many", { subDepartmentId });
 			dispatch({ type: GET_EMPLOYEES, payload: employees });
 		} catch (error) {
 			dispatch({ type: CLEAR_EMPLOYEE });
