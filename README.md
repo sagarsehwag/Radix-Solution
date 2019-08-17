@@ -1,6 +1,6 @@
 # RadixSolution
 
-Hospital Management System using Node, Express, MongoDB, Mongoose, JWT, React, React-Router, Redux, Redux-Thunk, Axios & Bootstrap
+Hospital Management System using Node, Express, MongoDB, Mongoose & JSONWebToken in the backend & React, React-Router, Redux, Redux-Thunk, React-Moment, Axios & Bootstrap in the frontend.
 
 ## Installing Packages & Running Project
 
