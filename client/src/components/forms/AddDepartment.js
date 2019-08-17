@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 
-const AddDepartment = () => {
+import { addDepartment } from "../../actions/department";
+
+const AddDepartment = ({ addDepartment }) => {
 	const [formData, setFormData] = useState({ name: "" });
 	const { name } = formData;
 
@@ -9,8 +12,13 @@ const AddDepartment = () => {
 		setFormData({ ...formData, name: e.target.value });
 	};
 
+	const onSubmit = (e) => {
+		e.preventDefault();
+		addDepartment(formData);
+	};
+
 	return (
-		<form>
+		<form onSubmit={(e) => onSubmit(e)}>
 			<div className="form-group row">
 				<label htmlFor="departmentField" className="col-2 col-form-label">
 					Department
@@ -32,4 +40,7 @@ const AddDepartment = () => {
 	);
 };
 
-export default AddDepartment;
+export default connect(
+	null,
+	{ addDepartment }
+)(AddDepartment);

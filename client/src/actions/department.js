@@ -38,6 +38,25 @@ export const loadDepartment = (department) => {
 	};
 };
 
+// Add subdepartment
+export const addDepartment = (formData) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.post("/department", formData);
+			if (success) {
+				dispatch(setAlert(message, "success"));
+			} else {
+				dispatch(setAlert(message, "danger"));
+			}
+		} catch (error) {
+			dispatch({ type: CLEAR_DEPARTMENT });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
 // Clear department
 export const clearDepartment = () => {
 	return async (dispatch) => {

@@ -4,16 +4,20 @@ import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
+import { loadSubDepartments } from "../../actions/subdepartment";
+import { addEmployee } from "../../actions/employee";
 
 const AddEmployee = ({
 	loadDepartments,
+	loadSubDepartments,
+	addEmployee,
 	auth,
 	department: { loading, departments },
 	subDepartment: { subDepartments }
 }) => {
 	const [formData, setFormData] = useState({
-		subDepartments: [],
-		departments: [],
+		subDepartmentArray: new Set(),
+		departmentArray: new Set(),
 		name: "",
 		gender: ""
 	});
@@ -24,25 +28,71 @@ const AddEmployee = ({
 		if (!loading && user !== null) loadDepartments(isAdmin, user.permissions);
 	}, [loadDepartments, auth]);
 
-	// // After selecting department
-	// useEffect(() => {
-	// 	let department = departments.filter((department) => department._id === departmentId);
-	// 	if (department.length > 0) {
-	// 		loadDepartment(department[0]);
-	// 		loadSubDepartments(department[0].subDepartments);
-	// 	}
-	// }, [departmentId, loadSubDepartments, departments, loadDepartment]);
+	useEffect(() => {
+		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
+	}, [departmentArray, loadSubDepartments]);
 
 	const onChange = (e) => {
 		e.preventDefault();
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
+	const onSelectChange = (e) => {
+		e.preventDefault();
+		setFormData({
+			...formData,
+			[e.target.name]: new Set([...formData[e.target.name], e.target.value])
+		});
+	};
+
+	const onSubmit = (e) => {
+		e.preventDefault();
+		addEmployee({
+			...formData,
+			departments: [...departmentArray],
+			subDepartments: [...subDepartmentArray]
+		});
+	};
+
 	if (loading) {
 		return <Spinner />;
 	} else {
 		return (
-			<form>
+			<form onSubmit={(e) => onSubmit(e)}>
+				<div className="form-group row">
+					<label htmlFor="employeeNameField" className="col-2 col-form-label">
+						Name
+					</label>
+					<input
+						className="custom-select col"
+						id="employeeNameField"
+						name="name"
+						required
+						placeholder="Enter name"
+						multiple={true}
+						value={name}
+						onChange={(e) => onChange(e)}
+					/>
+				</div>
+
+				<div className="form-group row">
+					<label htmlFor="genderField" className="col-2 col-form-label">
+						Gender
+					</label>
+					<select
+						className="custom-select col"
+						id="genderField"
+						name="gender"
+						required
+						value={gender}
+						onChange={(e) => onChange(e)}
+					>
+						<option value>Choose a gender</option>
+						<option value="male">Male</option>
+						<option value="female">Female</option>
+					</select>
+				</div>
+
 				<div className="form-group row">
 					<label htmlFor="departmentField" className="col-2 col-form-label">
 						Department
@@ -50,13 +100,12 @@ const AddEmployee = ({
 					<select
 						className="custom-select col"
 						id="departmentField"
-						name="departmentId"
+						name="departmentArray"
 						required
 						multiple={true}
-						value={departmentArray}
-						onChange={(e) => onChange(e)}
+						value={[...departmentArray]}
+						onChange={(e) => onSelectChange(e)}
 					>
-						<option value>Choose a department</option>
 						{departments.map(({ label, _id }, index) => (
 							<option value={_id} key={index}>
 								{label}
@@ -72,13 +121,13 @@ const AddEmployee = ({
 					<select
 						className="custom-select col"
 						id="subDepartmentField"
-						name="subDepartmentId"
+						name="subDepartmentArray"
+						size="8"
 						required
 						multiple={true}
-						value={subDepartmentArray}
-						onChange={(e) => onChange(e)}
+						value={[...subDepartmentArray]}
+						onChange={(e) => onSelectChange(e)}
 					>
-						<option value>Choose a subdepartment</option>
 						{subDepartments.map(({ label, _id }, index) => (
 							<option value={_id} key={index}>
 								{label}
@@ -106,5 +155,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments }
+	{ loadDepartments, loadSubDepartments, addEmployee }
 )(AddEmployee);

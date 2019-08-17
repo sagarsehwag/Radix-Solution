@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
+import { addSubDepartment } from "../../actions/subdepartment";
 
 const AddSubDepartment = ({
 	loadDepartments,
+	addSubDepartment,
 	auth,
 	department: { loading, departments }
 }) => {
@@ -23,11 +25,16 @@ const AddSubDepartment = ({
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
+	const onSubmit = (e) => {
+		e.preventDefault();
+		addSubDepartment(formData);
+	};
+
 	if (loading) {
 		return <Spinner />;
 	} else {
 		return (
-			<form>
+			<form onSubmit={(e) => onSubmit(e)}>
 				<div className="form-group row">
 					<label htmlFor="departmentField" className="col-2 col-form-label">
 						Department
@@ -80,5 +87,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments }
+	{ loadDepartments, addSubDepartment }
 )(AddSubDepartment);

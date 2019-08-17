@@ -18,6 +18,25 @@ export const loadEmployees = (subDepartmentId) => {
 	};
 };
 
+// Create new employee
+export const addEmployee = (formData) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.post("/employee", formData);
+			if (success) {
+				dispatch(setAlert(message, "success"));
+			} else {
+				dispatch(setAlert(message, "danger"));
+			}
+		} catch (error) {
+			dispatch({ type: CLEAR_EMPLOYEE });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
 // Load the subdepartment
 export const loadEmployee = (employee) => {
 	return async (dispatch) => {
