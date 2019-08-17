@@ -57,7 +57,6 @@ router.post("/many", async (req, res, next) => {
 			employees
 		});
 	} catch (error) {
-		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at GET '/employee/:subDepartmentId'";
 		next(error);
@@ -68,6 +67,8 @@ router.post("/many", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
 	try {
 		let { name, gender, departments, subDepartments } = req.body;
+		console.log("departments", departments);
+		console.log("subDepartments", subDepartments);
 		const deparmentArray = await Department.find({ _id: { $in: departments } });
 
 		if (deparmentArray.length === departments.length) {
@@ -110,6 +111,7 @@ router.post("/", async (req, res, next) => {
 			message: "Successfully created new employee"
 		});
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at POST '/employee'";
 		next(error);

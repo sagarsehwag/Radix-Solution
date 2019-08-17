@@ -150,12 +150,20 @@ router.get("/subdepartment/:subDepartmentId", async (req, res, next) => {
 // Fetch multiple subdepartments
 router.post("/subdepartment/many", async (req, res, next) => {
 	try {
-		const { departmentId } = req.body;
-		const department = await Department.findById(departmentId);
-		const subDepartments = await SubDepartment.find(
-			{ _id: { $in: department.subDepartments } },
-			{ __v: false, employees: false }
-		);
+		const { departmentId, departmentIds } = req.body;
+		let subDepartments = [];
+		if (departmentIds) {
+			subDepartments = await SubDepartment.find(
+				{ department: { $in: departmentIds } },
+				{ __v: false, employees: false }
+			);
+		} else {
+			const department = await Department.findById(departmentId);
+			subDepartments = await SubDepartment.find(
+				{ _id: { $in: department.subDepartments } },
+				{ __v: false, employees: false }
+			);
+		}
 
 		return res.json({
 			success: true,
@@ -163,8 +171,9 @@ router.post("/subdepartment/many", async (req, res, next) => {
 			subDepartments
 		});
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at GET '/department/subdepartment/:departmentId'";
+		res.locals.message = "Server Error at POST '/department/subdepartment/many'";
 		next(error);
 	}
 });
