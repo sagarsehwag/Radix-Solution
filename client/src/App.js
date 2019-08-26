@@ -11,6 +11,7 @@ import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Log from "./components/log/Log";
 import AddDepartment from "./components/forms/AddDepartment";
+import EditDepartment from "./components/forms/EditDepartment";
 import AddSubDepartment from "./components/forms/AddSubDepartment";
 import AddEmployee from "./components/forms/AddEmployee";
 
@@ -19,6 +20,8 @@ import { loadUser } from "./actions/auth";
 import store from "./store/store";
 
 import setAuthToken from "./utils/setAuthToken";
+import EditSubDepartment from "./components/forms/EditSubDepartment";
+import EditEmployee from "./components/forms/EditEmployee";
 setAuthToken();
 
 const App = () => {
@@ -40,8 +43,15 @@ const App = () => {
 							<PrivateRoute exact path="/dashboard" component={Dashboard} />
 							<PrivateRoute exact path="/log" component={Log} />
 							<PrivateRoute exact path="/department" component={AddDepartment} />
+							<PrivateRoute exact path="/department/:id" component={EditDepartment} />
 							<PrivateRoute exact path="/subdepartment" component={AddSubDepartment} />
+							<PrivateRoute
+								exact
+								path="/subdepartment/:id"
+								component={EditSubDepartment}
+							/>
 							<PrivateRoute exact path="/employee" component={AddEmployee} />}
+							<PrivateRoute exact path="/employee/:id" component={EditEmployee} />}
 						</Switch>
 					</section>
 				</Fragment>

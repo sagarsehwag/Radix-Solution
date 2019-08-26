@@ -22,9 +22,12 @@ export const loadSubDepartments = (departmentId, departmentIds) => {
 };
 
 // Load the subdepartment
-export const loadSubDepartment = (subDepartment) => {
+export const getSubDepartment = (id) => {
 	return async (dispatch) => {
 		try {
+			const {
+				data: { subDepartment }
+			} = await axios.get(`/department/subdepartment/${id}`);
 			dispatch({ type: GET_SUBDEPARTMENT, payload: subDepartment });
 		} catch (error) {
 			dispatch({ type: CLEAR_SUBDEPARTMENT });
@@ -45,6 +48,23 @@ export const addSubDepartment = (formData) => {
 			} else {
 				dispatch(setAlert(message, "danger"));
 			}
+		} catch (error) {
+			dispatch({ type: CLEAR_SUBDEPARTMENT });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+// Edit department
+export const editSubDepartment = (formData, id) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.put("/department/subdepartment", { ...formData, id });
+
+			if (success) dispatch(setAlert(message, "success"));
+			else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_SUBDEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));

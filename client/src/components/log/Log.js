@@ -3,16 +3,13 @@ import { connect } from "react-redux";
 
 import Spinner from "../layout/Spinner";
 
-import { loadDepartment, loadDepartments } from "../../actions/department";
-import { loadSubDepartment, loadSubDepartments } from "../../actions/subdepartment";
-import { loadEmployee, loadEmployees } from "../../actions/employee";
+import { loadDepartments } from "../../actions/department";
+import { loadSubDepartments } from "../../actions/subdepartment";
+import { loadEmployees } from "../../actions/employee";
 
 const Log = ({
-	loadDepartment,
 	loadDepartments,
-	loadSubDepartment,
 	loadSubDepartments,
-	loadEmployee,
 	loadEmployees,
 	department: { departments, loading },
 	subdepartment: { subDepartments },
@@ -43,30 +40,21 @@ const Log = ({
 
 	// After selecting department
 	useEffect(() => {
-		let department = departments.filter((department) => department._id === departmentId);
-		if (department.length > 0) {
-			loadDepartment(department[0]);
-			loadSubDepartments(departmentId);
-		}
-	}, [departmentId, loadSubDepartments, departments, loadDepartment]);
+		if (departmentId !== "") loadSubDepartments(departmentId);
+	}, [departmentId, loadSubDepartments]);
 
 	// After selecting subdepartment
 	useEffect(() => {
-		let subDepartment = subDepartments.filter((sub) => sub._id === subDepartmentId);
-		if (subDepartment.length > 0) {
-			loadSubDepartment(subDepartment[0]);
-			loadEmployees(subDepartmentId);
-		}
-	}, [subDepartmentId, subDepartments, loadSubDepartment, loadEmployees]);
-
-	// After selecting employee
-	useEffect(() => {
-		let employee = employees.filter((emp) => emp._id === employeeId);
-		if (employee.length > 0) loadEmployee(employee[0]);
-	}, [employeeId, employees, loadEmployee]);
+		if (subDepartmentId !== "") loadEmployees(subDepartmentId);
+	}, [subDepartmentId, loadEmployees]);
 
 	const onChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
+
+	const onSubmit = (e) => {
+		e.preventsDefault();
+		// addLog(formData);
 	};
 
 	if (loading) {
@@ -74,7 +62,7 @@ const Log = ({
 	} else {
 		return (
 			<Fragment>
-				<form action="">
+				<form onSubmit={(e) => onSubmit(e)}>
 					<div className="form-group row">
 						<label htmlFor="departmentField" className="col-2 col-form-label">
 							Department
@@ -205,12 +193,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{
-		loadDepartment,
-		loadDepartments,
-		loadSubDepartment,
-		loadSubDepartments,
-		loadEmployee,
-		loadEmployees
-	}
+	{ loadDepartments, loadSubDepartments, loadEmployees }
 )(Log);

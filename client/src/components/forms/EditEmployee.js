@@ -5,15 +5,17 @@ import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
 import { loadSubDepartments } from "../../actions/subdepartment";
-import { addEmployee } from "../../actions/employee";
+import { editEmployee, getEmployee } from "../../actions/employee";
 
-const AddEmployee = ({
+const EditEmployee = ({
+	match,
 	loadDepartments,
 	loadSubDepartments,
-	addEmployee,
-	auth,
-	department: { loading, departments },
-	subDepartment: { subDepartments }
+	getEmployee,
+	editEmployee,
+	department: { loading: departmentLoading, departments },
+	subDepartment: { subDepartments },
+	employee: { loading, employee }
 }) => {
 	const [formData, setFormData] = useState({
 		subDepartmentArray: new Set(),
@@ -22,11 +24,23 @@ const AddEmployee = ({
 		gender: ""
 	});
 	const { departmentArray, subDepartmentArray, name, gender } = formData;
+	const id = match.params.id;
 
 	useEffect(() => {
-		const { loading, isAdmin, user } = auth;
-		if (!loading && user !== null) loadDepartments(isAdmin, user.permissions);
-	}, [loadDepartments, auth]);
+		getEmployee(id);
+		loadDepartments(true);
+	}, [loadDepartments, getEmployee, id]);
+
+	useEffect(() => {
+		if (employee) {
+			setFormData({
+				name: employee.name,
+				gender: employee.gender,
+				departmentArray: new Set([...employee.departments]),
+				subDepartmentArray: new Set([...employee.subDepartments])
+			});
+		}
+	}, [employee]);
 
 	useEffect(() => {
 		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
@@ -37,14 +51,14 @@ const AddEmployee = ({
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const removeSetElement = (set, value) => {
-		set.delete(value);
-		return new Set([...set]);
-	};
-
 	const onSelectChange = (e) => {
 		const name = e.target.name;
 		const value = e.target.value;
+
+		const removeSetElement = (set, value) => {
+			set.delete(value);
+			return new Set([...set]);
+		};
 
 		e.preventDefault();
 		setFormData({
@@ -57,14 +71,14 @@ const AddEmployee = ({
 
 	const onSubmit = (e) => {
 		e.preventDefault();
-		addEmployee({
+		editEmployee({
 			...formData,
 			departments: [...departmentArray],
 			subDepartments: [...subDepartmentArray]
 		});
 	};
 
-	if (loading) {
+	if (loading || departmentLoading) {
 		return <Spinner />;
 	} else {
 		return (
@@ -147,7 +161,6 @@ const AddEmployee = ({
 				</div>
 
 				<div className="row">
-					{/* <div className="col" /> */}
 					<input type="submit" value="Submit" className="btn btn-primary col ml-3" />
 				</div>
 			</form>
@@ -159,11 +172,11 @@ const mapStateToProps = (state) => {
 	return {
 		department: state.department,
 		subDepartment: state.subdepartment,
-		auth: state.auth
+		employee: state.employee
 	};
 };
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments, loadSubDepartments, addEmployee }
-)(AddEmployee);
+	{ loadDepartments, loadSubDepartments, editEmployee, getEmployee }
+)(EditEmployee);

@@ -13,17 +13,20 @@ export default function(state = initialState, action) {
 		case GET_EMPLOYEE:
 			return {
 				...state,
-				employee: payload
+				employee: payload,
+				loading: false
 			};
 		case GET_EMPLOYEES:
 			return {
 				...state,
-				employees: payload
+				employees: payload,
+				loading: false
 			};
 		case CLEAR_EMPLOYEE:
 			return {
 				employee: null,
-				employees: []
+				employees: [],
+				loading: false
 			};
 		default:
 			return state;

@@ -27,9 +27,12 @@ export const loadDepartments = (isAdmin, permissions) => {
 };
 
 // Load department
-export const loadDepartment = (department) => {
+export const getDepartment = (departmentId) => {
 	return async (dispatch) => {
 		try {
+			const {
+				data: { department }
+			} = await axios.get(`/department/${departmentId}`);
 			dispatch({ type: GET_DEPARTMENT, payload: department });
 		} catch (error) {
 			dispatch({ type: CLEAR_DEPARTMENT });
@@ -50,6 +53,23 @@ export const addDepartment = (formData) => {
 			} else {
 				dispatch(setAlert(message, "danger"));
 			}
+		} catch (error) {
+			dispatch({ type: CLEAR_DEPARTMENT });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+// Edit subdepartment
+export const editDepartment = (formData, id) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.put("/department", { ...formData, id });
+
+			if (success) dispatch(setAlert(message, "success"));
+			else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_DEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));

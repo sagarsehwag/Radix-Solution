@@ -17,17 +17,20 @@ export default function(state = initialState, action) {
 		case GET_SUBDEPARTMENT:
 			return {
 				...state,
-				subDepartment: payload
+				subDepartment: payload,
+				loading: false
 			};
 		case GET_SUBDEPARTMENTS:
 			return {
 				...state,
-				subDepartments: payload
+				subDepartments: payload,
+				loading: false
 			};
 		case CLEAR_SUBDEPARTMENT:
 			return {
 				subDepartment: null,
-				subDepartments: []
+				subDepartments: [],
+				loading: false
 			};
 		default:
 			return state;

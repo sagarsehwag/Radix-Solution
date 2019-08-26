@@ -25,11 +25,26 @@ export const addEmployee = (formData) => {
 			const {
 				data: { success, message }
 			} = await axios.post("/employee", formData);
-			if (success) {
-				dispatch(setAlert(message, "success"));
-			} else {
-				dispatch(setAlert(message, "danger"));
-			}
+
+			if (success) dispatch(setAlert(message, "success"));
+			else dispatch(setAlert(message, "danger"));
+		} catch (error) {
+			dispatch({ type: CLEAR_EMPLOYEE });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+// Edit employee
+export const editEmployee = (formData, id) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.put("/employee", { ...formData, id });
+
+			if (success) dispatch(setAlert(message, "success"));
+			else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_EMPLOYEE });
 			dispatch(setAlert(error.response.data.message, "danger"));
@@ -38,9 +53,12 @@ export const addEmployee = (formData) => {
 };
 
 // Load the subdepartment
-export const loadEmployee = (employee) => {
+export const getEmployee = (id) => {
 	return async (dispatch) => {
 		try {
+			const {
+				data: { employee }
+			} = await axios.get(`/employee/${id}`);
 			dispatch({ type: GET_EMPLOYEE, payload: employee });
 		} catch (error) {
 			dispatch({ type: CLEAR_EMPLOYEE });
