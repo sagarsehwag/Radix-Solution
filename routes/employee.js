@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const express = require("express");
 
 const router = express.Router();
-const ObjectId = mongoose.Types.ObjectId;
 
 const SubDepartment = require("../models/SubDeparmentModel");
 const Department = require("../models/DepartmentModel");
@@ -28,12 +27,12 @@ router.get("/", async (req, res, next) => {
 router.get("/:employeeId", async (req, res, next) => {
 	try {
 		const id = req.params.employeeId;
-		const employeeData = await Employee.findById(id);
+		const employee = await Employee.findById(id);
 
 		res.json({
 			success: true,
 			message: "Successfully fetched the employee",
-			employeeData
+			employee
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
@@ -67,15 +66,9 @@ router.post("/many", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
 	try {
 		let { name, gender, departments, subDepartments } = req.body;
-		console.log("departments", departments);
-		console.log("subDepartments", subDepartments);
-		const deparmentArray = await Department.find({ _id: { $in: departments } });
+		const departmentArray = await Department.find({ _id: { $in: departments } });
 
-		if (deparmentArray.length === departments.length) {
-			departments = departments.map((id) => {
-				return ObjectId(id);
-			});
-		} else {
+		if (departmentArray.length !== departments.length) {
 			return res.status(401).json({
 				success: false,
 				message: "departments array has invalid ObjectId's"
@@ -87,11 +80,7 @@ router.post("/", async (req, res, next) => {
 			department: { $in: departments }
 		});
 
-		if (subDepartmentArray.length === subDepartments.length) {
-			subDepartments = subDepartments.map((id) => {
-				return ObjectId(id);
-			});
-		} else {
+		if (subDepartmentArray.length !== subDepartments.length) {
 			return res.status(401).json({
 				success: false,
 				message: "subDepartments array has invalid ObjectId's"
@@ -114,6 +103,49 @@ router.post("/", async (req, res, next) => {
 		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at POST '/employee'";
+		next(error);
+	}
+});
+
+// Edit an employee
+router.put("/", async (req, res, next) => {
+	try {
+		let { id, name, gender, departments, subDepartments } = req.body;
+		const departmentArray = await Department.find({ _id: { $in: departments } });
+
+		if (departmentArray.length !== departments.length) {
+			return res.status(401).json({
+				success: false,
+				message: "departments array has invalid ObjectId's"
+			});
+		}
+
+		const subDepartmentArray = await SubDepartment.find({
+			_id: { $in: subDepartments },
+			department: { $in: departments }
+		});
+
+		if (subDepartmentArray.length !== subDepartments.length) {
+			return res.status(401).json({
+				success: false,
+				message: "subDepartments array has invalid ObjectId's"
+			});
+		}
+
+		await Employee.findByIdAndUpdate(id, { name, gender, departments, subDepartments });
+
+		await SubDepartment.updateMany(
+			{ _id: { $in: subDepartments } },
+			{ $push: { employees: newEmployee.id } }
+		);
+
+		res.json({
+			success: true,
+			message: "Successfully created new employee"
+		});
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at PUT '/employee'";
 		next(error);
 	}
 });

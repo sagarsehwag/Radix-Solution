@@ -48,7 +48,9 @@ router.post("/many", async (req, res, next) => {
 router.get("/:departmentId", async (req, res, next) => {
 	try {
 		const { departmentId } = req.params;
-		const department = await Department.findById(departmentId);
+		const department = await Department.findById(departmentId).select(
+			"-__v -subDepartments"
+		);
 		return res.json({
 			success: true,
 			message: "Successfully fetched the department",
@@ -82,7 +84,7 @@ router.post("/", adminAuth, async (req, res, next) => {
 
 			return res.json({
 				success: true,
-				message: "Department Created, Now add subdeparments"
+				message: "Department created, Now add subdeparments"
 			});
 		} else {
 			return res.status(401).json({
@@ -93,6 +95,37 @@ router.post("/", adminAuth, async (req, res, next) => {
 	} catch (error) {
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at POST '/department'";
+		next(error);
+	}
+});
+
+// Edit Department
+router.put("/", adminAuth, async (req, res, next) => {
+	try {
+		const { name, id } = req.body;
+		const department = await Department.findById(id);
+
+		if (department) {
+			newName = name
+				.split(" ")
+				.join("-")
+				.toLowerCase();
+
+			await Department.findByIdAndUpdate(id, { name: newName, label: name });
+
+			return res.json({
+				success: true,
+				message: "Department updated"
+			});
+		} else {
+			return res.status(401).json({
+				success: false,
+				message: "Department does not exist"
+			});
+		}
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at PUT '/department/edit'";
 		next(error);
 	}
 });
@@ -231,6 +264,56 @@ router.post("/subdepartment", async (req, res, next) => {
 	}
 });
 
+// Edit Subdepartment
+router.put("/subdepartment", async (req, res, next) => {
+	try {
+		let { id, name, departmentId } = req.body;
+		console.log();
+
+		const label = name;
+		name = name
+			.split(" ")
+			.join("-")
+			.toLowerCase();
+
+		const department = await Department.findById(departmentId);
+		const subDepartment = await SubDepartment.findById(id);
+
+		if (department) {
+			if (subDepartment) {
+				if (departmentId !== subDepartment.department) {
+					// Remove subdepartment id from old department's subdepartments array
+				}
+
+				await SubDepartment.findByIdAndUpdate(id, {
+					name,
+					label,
+					department: departmentId
+				});
+
+				return res.json({
+					success: true,
+					message: "Subdepartment updated"
+				});
+			} else {
+				return res.status(401).json({
+					success: false,
+					message: "SubDepartment does not exist"
+				});
+			}
+		} else {
+			return res.status(401).json({
+				success: false,
+				message: "Department does not exist"
+			});
+		}
+	} catch (error) {
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at PUT '/department/subdepartment'";
+		next(error);
+	}
+});
+
 // Delete Subdepartment
 router.delete("/subdepartment", async (req, res, next) => {
 	try {
@@ -240,7 +323,7 @@ router.delete("/subdepartment", async (req, res, next) => {
 		if (!deletedSubDepartment) {
 			return res.status(401).json({
 				success: false,
-				message: "ObjectId is not valid or SubDeparment does not exist"
+				message: "ObjectId is not valid or subdeparment does not exist"
 			});
 		}
 
