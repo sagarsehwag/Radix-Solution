@@ -20,10 +20,11 @@ const EditEmployee = ({
 	const [formData, setFormData] = useState({
 		subDepartmentArray: new Set(),
 		departmentArray: new Set(),
+		removedSub: new Set(),
 		name: "",
 		gender: ""
 	});
-	const { departmentArray, subDepartmentArray, name, gender } = formData;
+	const { departmentArray, subDepartmentArray, name, gender, removedSub } = formData;
 	const id = match.params.id;
 
 	useEffect(() => {
@@ -37,7 +38,8 @@ const EditEmployee = ({
 				name: employee.name,
 				gender: employee.gender,
 				departmentArray: new Set([...employee.departments]),
-				subDepartmentArray: new Set([...employee.subDepartments])
+				subDepartmentArray: new Set([...employee.subDepartments]),
+				removedSub: new Set()
 			});
 		}
 	}, [employee]);
@@ -65,17 +67,22 @@ const EditEmployee = ({
 			...formData,
 			[name]: formData[name].has(value)
 				? removeSetElement(formData[name], value)
-				: new Set([...formData[name], value])
+				: new Set([...formData[name], value]),
+			removedSub: new Set([...removedSub, value])
 		});
 	};
 
 	const onSubmit = (e) => {
 		e.preventDefault();
-		editEmployee({
-			...formData,
-			departments: [...departmentArray],
-			subDepartments: [...subDepartmentArray]
-		});
+		editEmployee(
+			{
+				...formData,
+				departments: [...departmentArray],
+				subDepartments: [...subDepartmentArray],
+				removedSub: [...removedSub]
+			},
+			id
+		);
 	};
 
 	if (loading || departmentLoading) {
