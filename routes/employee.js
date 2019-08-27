@@ -110,7 +110,7 @@ router.post("/", async (req, res, next) => {
 // Edit an employee
 router.put("/", async (req, res, next) => {
 	try {
-		let { id, name, gender, departments, subDepartments } = req.body;
+		let { id, name, gender, departments, subDepartments, removedSub } = req.body;
 		const departmentArray = await Department.find({ _id: { $in: departments } });
 
 		if (departmentArray.length !== departments.length) {
@@ -135,15 +135,21 @@ router.put("/", async (req, res, next) => {
 		await Employee.findByIdAndUpdate(id, { name, gender, departments, subDepartments });
 
 		await SubDepartment.updateMany(
+			{ _id: { $in: removedSub } },
+			{ $pull: { employees: id } }
+		);
+
+		await SubDepartment.updateMany(
 			{ _id: { $in: subDepartments } },
-			{ $push: { employees: newEmployee.id } }
+			{ $addToSet: { employees: id } }
 		);
 
 		res.json({
 			success: true,
-			message: "Successfully created new employee"
+			message: "successfully updated the employee"
 		});
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at PUT '/employee'";
 		next(error);
