@@ -10,16 +10,28 @@ const Log = require("../models/LogModel");
 const router = express.Router();
 
 // Fetch past records or logs
-router.get("/", async (req, res, next) => {
+router.post("/get", async (req, res, next) => {
 	try {
-		const { department, page } = req.query;
-		const logs = await Log.find({ department }, {}, { skip: page - 1, limit: 10 });
+		const { departments, subDepartments, page } = req.body;
+
+		let params = {};
+		if (departments.length === 0 && subDepartments.length === 0);
+		else if (subDepartments.length !== 0) params.subDepartment = { $in: subDepartments };
+		else if (departments.length !== 0) params.department = { $in: departments };
+
+		const logs = await Log.find(
+			{ ...params },
+			{ __v: false },
+			{ skip: page - 1, limit: 10 }
+		).populate("department subDepartment employee");
+
 		return res.json({
 			success: true,
-			message: "",
+			message: "all the logs",
 			logs
 		});
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at GET '/logs'";
 		next(error);
@@ -33,7 +45,7 @@ router.post("/", async (req, res, next) => {
 			departmentId,
 			subDepartmentId,
 			employeeId,
-			numberOfCases,
+			testCases: numberOfCases,
 			tentativeRevenue,
 			conversionRatio
 		} = req.body;
@@ -61,11 +73,28 @@ router.post("/", async (req, res, next) => {
 
 		return res.json({
 			success: true,
-			message: "Log added"
+			message: "log added"
+		});
+	} catch (error) {
+		console.log(error);
+		res.locals.statusCode = 500;
+		res.locals.message = "Server Error at POST '/logs'";
+		next(error);
+	}
+});
+
+router.delete("/", async (req, res, next) => {
+	try {
+		const { id } = req.body;
+		await Log.findByIdAndDelete(id);
+
+		return res.json({
+			success: true,
+			message: "log deleted"
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at POST '/logs'";
+		res.locals.message = "Server Error at DELETE '/logs'";
 		next(error);
 	}
 });
