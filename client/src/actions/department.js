@@ -2,7 +2,12 @@ import axios from "axios";
 import setAlert from "./alert";
 // import { checkAdmin } from "./auth";
 
-import { GET_DEPARTMENT, GET_DEPARTMENTS, CLEAR_DEPARTMENT } from "./types";
+import {
+	GET_DEPARTMENT,
+	GET_DEPARTMENTS,
+	CLEAR_DEPARTMENT,
+	DELETE_DEPARTMENT
+} from "./types";
 
 // Load departments via permissions
 export const loadDepartments = (isAdmin, permissions) => {
@@ -70,6 +75,24 @@ export const editDepartment = (formData, id) => {
 
 			if (success) dispatch(setAlert(message, "success"));
 			else dispatch(setAlert(message, "danger"));
+		} catch (error) {
+			dispatch({ type: CLEAR_DEPARTMENT });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+export const deleteDepartment = (id) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.delete("/department", { data: { id } });
+
+			if (success) {
+				dispatch({ type: DELETE_DEPARTMENT, payload: id });
+				dispatch(setAlert(message, "success"));
+			} else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_DEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));

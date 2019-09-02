@@ -10,18 +10,25 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Log from "./components/log/Log";
-import AddDepartment from "./components/forms/AddDepartment";
-import EditDepartment from "./components/forms/EditDepartment";
-import AddSubDepartment from "./components/forms/AddSubDepartment";
-import AddEmployee from "./components/forms/AddEmployee";
+
+import Department from "./components/department/Department";
+import AddDepartment from "./components/department/AddDepartment";
+import EditDepartment from "./components/department/EditDepartment";
+
+import SubDepartment from "./components/subdepartment/SubDepartment";
+import AddSubDepartment from "./components/subdepartment/AddSubDepartment";
+import EditSubDepartment from "./components/subdepartment/EditSubDepartment";
+
+import Employee from "./components/employee/Employee";
+import AddEmployee from "./components/employee/AddEmployee";
+import EditEmployee from "./components/employee/EditEmployee";
 
 import { loadUser } from "./actions/auth";
 
 import store from "./store/store";
 
 import setAuthToken from "./utils/setAuthToken";
-import EditSubDepartment from "./components/forms/EditSubDepartment";
-import EditEmployee from "./components/forms/EditEmployee";
+
 setAuthToken();
 
 const App = () => {
@@ -42,16 +49,23 @@ const App = () => {
 							<Route exact path="/register" component={Register} />
 							<PrivateRoute exact path="/dashboard" component={Dashboard} />
 							<PrivateRoute exact path="/log" component={Log} />
-							<PrivateRoute exact path="/department" component={AddDepartment} />
+							<PrivateRoute exact path="/department" component={Department} />
+							<PrivateRoute exact path="/department/add" component={AddDepartment} />
 							<PrivateRoute exact path="/department/:id" component={EditDepartment} />
-							<PrivateRoute exact path="/subdepartment" component={AddSubDepartment} />
+							<PrivateRoute exact path="/subdepartment" component={SubDepartment} />
+							<PrivateRoute
+								exact
+								path="/subdepartment/add"
+								component={AddSubDepartment}
+							/>
 							<PrivateRoute
 								exact
 								path="/subdepartment/:id"
 								component={EditSubDepartment}
 							/>
-							<PrivateRoute exact path="/employee" component={AddEmployee} />}
-							<PrivateRoute exact path="/employee/:id" component={EditEmployee} />}
+							<PrivateRoute exact path="/employee" component={Employee} />
+							<PrivateRoute exact path="/employee/add" component={AddEmployee} />
+							<PrivateRoute exact path="/employee/:id" component={EditEmployee} />
 						</Switch>
 					</section>
 				</Fragment>

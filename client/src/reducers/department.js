@@ -1,4 +1,9 @@
-import { GET_DEPARTMENT, GET_DEPARTMENTS, CLEAR_DEPARTMENT } from "../actions/types";
+import {
+	GET_DEPARTMENT,
+	GET_DEPARTMENTS,
+	CLEAR_DEPARTMENT,
+	DELETE_DEPARTMENT
+} from "../actions/types";
 
 const initialState = {
 	department: null,
@@ -20,6 +25,12 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				departments: payload,
+				loading: false
+			};
+		case DELETE_DEPARTMENT:
+			return {
+				...state,
+				departments: state.departments.filter(({ _id }) => _id !== payload),
 				loading: false
 			};
 		case CLEAR_DEPARTMENT:

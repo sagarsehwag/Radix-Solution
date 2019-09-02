@@ -4,7 +4,7 @@ import setAlert from "./alert";
 import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE } from "./types";
 
 // Load all the subdepartments
-export const loadEmployees = (subDepartmentId) => {
+export const loadEmployees = (subDepartmentId, subDepartmentIds) => {
 	return async (dispatch) => {
 		try {
 			const {

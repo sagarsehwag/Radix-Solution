@@ -6,11 +6,13 @@ import Spinner from "../layout/Spinner";
 import { loadDepartments } from "../../actions/department";
 import { loadSubDepartments } from "../../actions/subdepartment";
 import { loadEmployees } from "../../actions/employee";
+import { addLog } from "../../actions/logs";
 
 const Log = ({
 	loadDepartments,
 	loadSubDepartments,
 	loadEmployees,
+	addLog,
 	department: { departments, loading },
 	subdepartment: { subDepartments },
 	employee: { employees },
@@ -53,8 +55,8 @@ const Log = ({
 	};
 
 	const onSubmit = (e) => {
-		e.preventsDefault();
-		// addLog(formData);
+		e.preventDefault();
+		addLog(formData);
 	};
 
 	if (loading) {
@@ -193,5 +195,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments, loadSubDepartments, loadEmployees }
+	{ loadDepartments, loadSubDepartments, loadEmployees, addLog }
 )(Log);
