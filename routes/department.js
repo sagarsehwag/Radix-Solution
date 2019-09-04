@@ -283,6 +283,9 @@ router.put("/subdepartment", async (req, res, next) => {
 			if (subDepartment) {
 				if (departmentId !== subDepartment.department) {
 					// Remove subdepartment id from old department's subdepartments array
+					await Department.findByIdAndUpdate(subDepartment.department, {
+						$pull: { subDepartments: id }
+					});
 				}
 
 				await SubDepartment.findByIdAndUpdate(id, {
@@ -308,6 +311,7 @@ router.put("/subdepartment", async (req, res, next) => {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.locals.statusCode = 500;
 		res.locals.message = "Server Error at PUT '/department/subdepartment'";
 		next(error);
