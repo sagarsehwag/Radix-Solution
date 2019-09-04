@@ -11,6 +11,7 @@ const { auth, adminAuth } = require("../middleware/auth");
 const logger = require("../middleware/logger");
 
 module.exports = async (app) => {
+	app.use(express.static("../client/build/static"));
 	app.use(express.json());
 	app.use("/auth", user);
 	app.use("/logs", auth, logs);

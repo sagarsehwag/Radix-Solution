@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const Joi = require("joi");
 
 const SubDepartment = require("../models/SubDeparmentModel");
 const Department = require("../models/DepartmentModel");
@@ -22,7 +21,7 @@ router.post("/get", async (req, res, next) => {
 		const logs = await Log.find(
 			{ ...params },
 			{ __v: false },
-			{ skip: page - 1, limit: 10 }
+			{ skip: (page - 1) * 10, limit: 10 }
 		).populate("department subDepartment employee");
 
 		return res.json({

@@ -37,6 +37,14 @@ const Dashboard = ({
 		getLogs(departmentArray, subDepartmentArray, page);
 	}, [getLogs, departmentArray, subDepartmentArray, page]);
 
+	const incPage = () => {
+		setFormData({ ...formData, page: page + 1 });
+	};
+
+	const decPage = () => {
+		setFormData({ ...formData, page: page - 1 });
+	};
+
 	if (loading) {
 		return <Spinner />;
 	} else {
@@ -153,6 +161,25 @@ const Dashboard = ({
 						)}
 					</tbody>
 				</table>
+
+				<nav aria-label="Page navigation example">
+					<ul class="pagination">
+						{page > 1 ? (
+							<li class="page-item">
+								<Link onClick={decPage} class="page-link">
+									Previous
+								</Link>
+							</li>
+						) : (
+							""
+						)}
+						<li class="page-item">
+							<Link onClick={incPage} class="page-link">
+								Next
+							</Link>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		);
 	}
