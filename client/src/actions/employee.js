@@ -1,7 +1,7 @@
 import axios from "axios";
 import setAlert from "./alert";
 
-import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE } from "./types";
+import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE, DELETE_EMPLOYEE } from "./types";
 
 // Load all the subdepartments
 export const loadEmployees = (subDepartmentId, subDepartmentIds) => {
@@ -60,6 +60,24 @@ export const getEmployee = (id) => {
 				data: { employee }
 			} = await axios.get(`/employee/${id}`);
 			dispatch({ type: GET_EMPLOYEE, payload: employee });
+		} catch (error) {
+			dispatch({ type: CLEAR_EMPLOYEE });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+export const deleteEmployee = (id) => {
+	return async (dispatch) => {
+		try {
+			const {
+				data: { success, message }
+			} = await axios.delete(`/employee`, { data: { id } });
+
+			if (success) {
+				dispatch({ type: DELETE_EMPLOYEE, payload: id });
+				dispatch(setAlert(message, "success"));
+			} else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_EMPLOYEE });
 			dispatch(setAlert(error.response.data.message, "danger"));

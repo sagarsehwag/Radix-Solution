@@ -1,7 +1,12 @@
 import axios from "axios";
 import setAlert from "./alert";
 
-import { GET_SUBDEPARTMENT, GET_SUBDEPARTMENTS, CLEAR_SUBDEPARTMENT } from "./types";
+import {
+	GET_SUBDEPARTMENT,
+	GET_SUBDEPARTMENTS,
+	CLEAR_SUBDEPARTMENT,
+	DELETE_SUBDEPARTMENT
+} from "./types";
 
 // Load all the subdepartments
 export const loadSubDepartments = (departmentId, departmentIds) => {
@@ -65,6 +70,24 @@ export const editSubDepartment = (formData, id) => {
 
 			if (success) dispatch(setAlert(message, "success"));
 			else dispatch(setAlert(message, "danger"));
+		} catch (error) {
+			dispatch({ type: CLEAR_SUBDEPARTMENT });
+			dispatch(setAlert(error.response.data.message, "danger"));
+		}
+	};
+};
+
+export const deleteSubDepartment = (id) => {
+	return async (dispatch) => {
+		try {
+			console.log(id);
+			const {
+				data: { success, message }
+			} = await axios.delete("/department/subdepartment", { data: { id } });
+			if (success) {
+				dispatch({ type: DELETE_SUBDEPARTMENT, payload: id });
+				dispatch(setAlert(message, "success"));
+			} else dispatch(setAlert(message, "danger"));
 		} catch (error) {
 			dispatch({ type: CLEAR_SUBDEPARTMENT });
 			dispatch(setAlert(error.response.data.message, "danger"));

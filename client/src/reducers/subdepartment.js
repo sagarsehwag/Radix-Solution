@@ -1,7 +1,8 @@
 import {
 	GET_SUBDEPARTMENT,
 	GET_SUBDEPARTMENTS,
-	CLEAR_SUBDEPARTMENT
+	CLEAR_SUBDEPARTMENT,
+	DELETE_SUBDEPARTMENT
 } from "../actions/types";
 
 const initialState = {
@@ -24,6 +25,12 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				subDepartments: payload,
+				loading: false
+			};
+		case DELETE_SUBDEPARTMENT:
+			return {
+				...state,
+				subDepartments: state.subDepartments.filter(({ _id }) => _id !== payload),
 				loading: false
 			};
 		case CLEAR_SUBDEPARTMENT:

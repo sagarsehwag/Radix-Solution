@@ -1,19 +1,21 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
-import { loadSubDepartments } from "../../actions/subdepartment";
+import { loadSubDepartments, deleteSubDepartment } from "../../actions/subdepartment";
 
 const SubDepartment = ({
 	loadDepartments,
 	loadSubDepartments,
+	deleteSubDepartment,
 	department: { departments, loading },
 	subdepartment: { subDepartments }
 }) => {
-	const [formData, setFormData] = useState({ departmentArray: new Set() });
+	const [formData, setFormData] = useState({ departmentArray: [] });
 	const { departmentArray } = formData;
 
 	useEffect(() => {
@@ -21,26 +23,8 @@ const SubDepartment = ({
 	}, [loadDepartments]);
 
 	useEffect(() => {
-		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
+		if (departmentArray.length > 0) loadSubDepartments(null, departmentArray);
 	}, [departmentArray, loadSubDepartments]);
-
-	const onSelectChange = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-
-		const removeSetElement = (set, value) => {
-			set.delete(value);
-			return new Set([...set]);
-		};
-
-		e.preventDefault();
-		setFormData({
-			...formData,
-			[name]: formData[name].has(value)
-				? removeSetElement(formData[name], value)
-				: new Set([...formData[name], value])
-		});
-	};
 
 	if (loading) {
 		return <Spinner />;
@@ -50,37 +34,33 @@ const SubDepartment = ({
 				<div>
 					<div className="row">
 						<h1 className="col">Subdepartments</h1>
-						<Link to="/department/add" className="col-1">
+						<Link to="/subdepartment/add" className="col-1">
 							<i className="fas fa-plus-circle fa-4x" />
 						</Link>
 					</div>
 				</div>
 
 				<form className="mt-4">
-					<div className="form-group row">
-						<label htmlFor="departmentField" className="col-2 col-form-label">
-							Department
-						</label>
-						<select
-							className="custom-select col"
-							id="departmentField"
-							name="departmentArray"
-							required
-							multiple={true}
-							value={[...departmentArray]}
-							onChange={(e) => onSelectChange(e)}
-						>
-							{departments.map(({ label, _id }, index) => (
-								<option value={_id} key={index}>
-									{label}
-								</option>
-							))}
-						</select>
-					</div>
+					<Select
+						required
+						className="col"
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									departmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={departments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 				</form>
 
-				<table className="table mt-4">
-					<thead className="thead-dark">
+				<table className="table table-bordered rounded mt-4">
+					<thead className="thead">
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Name</th>
@@ -100,13 +80,37 @@ const SubDepartment = ({
 										</Link>
 									</td>
 									<td>
-										<button className="btn btn-danger">Delete</button>
+										<button
+											className="btn btn-danger"
+											onClick={(e) => deleteSubDepartment(_id)}
+										>
+											Delete
+										</button>
 									</td>
 								</tr>
 							);
 						})}
 					</tbody>
 				</table>
+				{/* 
+				<div className="row">
+					{subDepartments.map(({ label, _id }, index) => {
+						return (
+							<div key={_id} className="bg-light rounded shadow-sm p-3 m-3">
+								<h4>{label}</h4>
+								<Link to={`/subdepartment/${_id}`} className="btn btn-primary mx-2">
+									Edit
+								</Link>
+								<button
+									className="btn btn-danger mx-2"
+									onClick={(e) => deleteSubDepartment(_id)}
+								>
+									Delete
+								</button>
+							</div>
+						);
+					})}
+				</div> */}
 			</Fragment>
 		);
 	}
@@ -121,5 +125,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments, loadSubDepartments }
+	{ loadDepartments, loadSubDepartments, deleteSubDepartment }
 )(SubDepartment);

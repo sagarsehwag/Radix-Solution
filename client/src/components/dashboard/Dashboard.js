@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-
+import Select from "react-select";
 import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
@@ -19,8 +19,8 @@ const Dashboard = ({
 	logs
 }) => {
 	const [formData, setFormData] = useState({
-		subDepartmentArray: new Set(),
-		departmentArray: new Set(),
+		subDepartmentArray: [],
+		departmentArray: [],
 		page: 1
 	});
 	const { departmentArray, subDepartmentArray, page } = formData;
@@ -30,29 +30,11 @@ const Dashboard = ({
 	}, [loadDepartments]);
 
 	useEffect(() => {
-		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
+		if (departmentArray.length > 0) loadSubDepartments(null, [...departmentArray]);
 	}, [departmentArray, loadSubDepartments]);
 
-	const onSelectChange = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-
-		const removeSetElement = (set, value) => {
-			set.delete(value);
-			return new Set([...set]);
-		};
-
-		e.preventDefault();
-		setFormData({
-			...formData,
-			[name]: formData[name].has(value)
-				? removeSetElement(formData[name], value)
-				: new Set([...formData[name], value])
-		});
-	};
-
 	useEffect(() => {
-		getLogs([...departmentArray], [...subDepartmentArray], page);
+		getLogs(departmentArray, subDepartmentArray, page);
 	}, [getLogs, departmentArray, subDepartmentArray, page]);
 
 	if (loading) {
@@ -85,53 +67,46 @@ const Dashboard = ({
 					)}
 				</div>
 
-				<form className="mt-4 ui">
-					<div className="form-group row">
-						<label htmlFor="departmentField" className="col-2 col-form-label">
-							Department
-						</label>
-						<select
-							className="custom-select col"
-							id="departmentField"
-							name="departmentArray"
-							required
-							multiple={true}
-							value={[...departmentArray]}
-							onChange={(e) => onSelectChange(e)}
-						>
-							{departments.map(({ label, _id }, index) => (
-								<option value={_id} key={index}>
-									{label}
-								</option>
-							))}
-						</select>
-					</div>
+				<form className="mt-4 row">
+					<Select
+						required
+						className="col"
+						placeholder={"Select departments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									departmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={departments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 
-					<div className="form-group row">
-						<label htmlFor="subDepartmentField" className="col-2 col-form-label">
-							Subdepartment
-						</label>
-						<select
-							className="custom-select col"
-							id="subDepartmentField"
-							name="subDepartmentArray"
-							size="8"
-							required
-							multiple={true}
-							value={[...subDepartmentArray]}
-							onChange={(e) => onSelectChange(e)}
-						>
-							{subDepartments.map(({ label, _id }, index) => (
-								<option value={_id} key={index}>
-									{label}
-								</option>
-							))}
-						</select>
-					</div>
+					<Select
+						required
+						className="col"
+						placeholder={"Select subdepartments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									subDepartmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={subDepartments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 				</form>
 
-				<table className="table mt-4">
-					<thead className="thead-dark">
+				<table className="table table-bordered mt-4">
+					<thead className="thead">
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Department</th>

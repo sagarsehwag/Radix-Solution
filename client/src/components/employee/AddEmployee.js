@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import Select from "react-select";
 
 import Spinner from "../layout/Spinner";
 
@@ -16,8 +17,8 @@ const AddEmployee = ({
 	subDepartment: { subDepartments }
 }) => {
 	const [formData, setFormData] = useState({
-		subDepartmentArray: new Set(),
-		departmentArray: new Set(),
+		subDepartmentArray: [],
+		departmentArray: [],
 		name: "",
 		gender: ""
 	});
@@ -29,7 +30,7 @@ const AddEmployee = ({
 	}, [loadDepartments, auth]);
 
 	useEffect(() => {
-		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
+		if (departmentArray.length > 0) loadSubDepartments(null, departmentArray);
 	}, [departmentArray, loadSubDepartments]);
 
 	const onChange = (e) => {
@@ -37,30 +38,13 @@ const AddEmployee = ({
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const removeSetElement = (set, value) => {
-		set.delete(value);
-		return new Set([...set]);
-	};
-
-	const onSelectChange = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-
-		e.preventDefault();
-		setFormData({
-			...formData,
-			[name]: formData[name].has(value)
-				? removeSetElement(formData[name], value)
-				: new Set([...formData[name], value])
-		});
-	};
-
 	const onSubmit = (e) => {
 		e.preventDefault();
 		addEmployee({
-			...formData,
-			departments: [...departmentArray],
-			subDepartments: [...subDepartmentArray]
+			name,
+			gender,
+			departments: departmentArray,
+			subDepartments: subDepartmentArray
 		});
 	};
 
@@ -107,47 +91,49 @@ const AddEmployee = ({
 					<label htmlFor="departmentField" className="col-2 col-form-label">
 						Department
 					</label>
-					<select
-						className="custom-select col"
-						id="departmentField"
-						name="departmentArray"
+					<Select
 						required
-						multiple={true}
-						value={[...departmentArray]}
-						onChange={(e) => onSelectChange(e)}
-					>
-						{departments.map(({ label, _id }, index) => (
-							<option value={_id} key={index}>
-								{label}
-							</option>
-						))}
-					</select>
+						className="col"
+						placeholder={"Select departments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									departmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={departments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 				</div>
 
 				<div className="form-group row">
 					<label htmlFor="subDepartmentField" className="col-2 col-form-label">
 						Subdepartment
 					</label>
-					<select
-						className="custom-select col"
-						id="subDepartmentField"
-						name="subDepartmentArray"
-						size="8"
+					<Select
 						required
-						multiple={true}
-						value={[...subDepartmentArray]}
-						onChange={(e) => onSelectChange(e)}
-					>
-						{subDepartments.map(({ label, _id }, index) => (
-							<option value={_id} key={index}>
-								{label}
-							</option>
-						))}
-					</select>
+						className="col"
+						placeholder={"Select subdepartments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									subDepartmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={subDepartments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 				</div>
 
 				<div className="row">
-					{/* <div className="col" /> */}
 					<input type="submit" value="Submit" className="btn btn-primary col ml-3" />
 				</div>
 			</form>

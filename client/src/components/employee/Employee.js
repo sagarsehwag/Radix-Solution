@@ -1,17 +1,19 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 import Spinner from "../layout/Spinner";
 
 import { loadDepartments } from "../../actions/department";
 import { loadSubDepartments } from "../../actions/subdepartment";
-import { loadEmployees } from "../../actions/employee";
+import { loadEmployees, deleteEmployee } from "../../actions/employee";
 
 const EditEmployee = ({
 	loadDepartments,
 	loadSubDepartments,
 	loadEmployees,
+	deleteEmployee,
 	department: { loading, departments },
 	subDepartment: { subDepartments },
 	employee: { employees }
@@ -27,29 +29,11 @@ const EditEmployee = ({
 	}, [loadDepartments]);
 
 	useEffect(() => {
-		if (departmentArray.size > 0) loadSubDepartments(null, [...departmentArray]);
+		if (departmentArray.length > 0) loadSubDepartments(null, [...departmentArray]);
 	}, [departmentArray, loadSubDepartments]);
 
-	const onSelectChange = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-
-		const removeSetElement = (set, value) => {
-			set.delete(value);
-			return new Set([...set]);
-		};
-
-		e.preventDefault();
-		setFormData({
-			...formData,
-			[name]: formData[name].has(value)
-				? removeSetElement(formData[name], value)
-				: new Set([...formData[name], value])
-		});
-	};
-
 	useEffect(() => {
-		if (subDepartmentArray.size > 0) loadEmployees();
+		if (subDepartmentArray.length > 0) loadEmployees();
 	}, [subDepartmentArray, loadEmployees]);
 
 	if (loading) {
@@ -65,50 +49,79 @@ const EditEmployee = ({
 						</Link>
 					</div>
 				</div>
-				<form className="mt-4">
-					<div className="form-group row">
-						<label htmlFor="departmentField" className="col-2 col-form-label">
-							Department
-						</label>
-						<select
-							className="custom-select col"
-							id="departmentField"
-							name="departmentArray"
-							required
-							multiple={true}
-							value={[...departmentArray]}
-							onChange={(e) => onSelectChange(e)}
-						>
-							{departments.map(({ label, _id }, index) => (
-								<option value={_id} key={index}>
-									{label}
-								</option>
-							))}
-						</select>
-					</div>
+				<form className="mt-4 row">
+					<Select
+						required
+						className="col"
+						placeholder={"Select departments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									departmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={departments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 
-					<div className="form-group row">
-						<label htmlFor="subDepartmentField" className="col-2 col-form-label">
-							Subdepartment
-						</label>
-						<select
-							className="custom-select col"
-							id="subDepartmentField"
-							name="subDepartmentArray"
-							size="8"
-							required
-							multiple={true}
-							value={[...subDepartmentArray]}
-							onChange={(e) => onSelectChange(e)}
-						>
-							{subDepartments.map(({ label, _id }, index) => (
-								<option value={_id} key={index}>
-									{label}
-								</option>
-							))}
-						</select>
-					</div>
+					<Select
+						required
+						className="col"
+						placeholder={"Select subdepartments..."}
+						closeMenuOnSelect={false}
+						onChange={(selectedOption) => {
+							if (selectedOption)
+								setFormData({
+									...formData,
+									subDepartmentArray: selectedOption.map(({ value }) => value)
+								});
+						}}
+						options={subDepartments.map(({ label, _id }) => {
+							return { label, value: _id };
+						})}
+						isMulti
+					/>
 				</form>
+
+				<table className="table table-bordered mt-4">
+					<thead className="thead">
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Gender</th>
+							<th scope="col">Edit</th>
+							<th scope="col">Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						{employees.map(({ _id, name, gender }, index) => {
+							return (
+								<tr key={_id}>
+									<td>{name}</td>
+									<td>{gender}</td>
+									<td>
+										<Link to={`/employee/${_id}`} className="btn btn-primary">
+											Edit
+										</Link>
+									</td>
+									<td>
+										<button
+											className="btn btn-danger"
+											onClick={(e) => {
+												deleteEmployee(_id);
+											}}
+										>
+											Delete
+										</button>
+									</td>
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
 			</Fragment>
 		);
 	}
@@ -124,5 +137,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
 	mapStateToProps,
-	{ loadDepartments, loadSubDepartments, loadEmployees }
+	{ loadDepartments, loadSubDepartments, loadEmployees, deleteEmployee }
 )(EditEmployee);

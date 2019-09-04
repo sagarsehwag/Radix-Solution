@@ -29,8 +29,8 @@ const Department = ({
 					</div>
 				</div>
 
-				<table className="table mt-4">
-					<thead className="thead-dark">
+				<table className="table table-bordered mt-4">
+					<thead className="thead">
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Name</th>
