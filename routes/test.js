@@ -12,12 +12,7 @@ const User = require("../models/UserModel");
 
 router.get("/", async (req, res, next) => {
 	try {
-		// const department = await Department.findOne(
-		// 	{ name: "medicine" },
-		// 	{ subDepartments: true }
-		// );
-
-		throw new Error("Fucking Error");
+		// throw new Error("Fucking Error");
 
 		res.json({
 			success: true,
@@ -25,7 +20,7 @@ router.get("/", async (req, res, next) => {
 		});
 	} catch (error) {
 		res.locals.statusCode = 500;
-		res.locals.message = "Server Error at '/test'";
+		res.locals.message = "Server Error at GET '/test'";
 		next(error);
 	}
 });

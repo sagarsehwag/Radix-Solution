@@ -44,12 +44,27 @@ router.get("/:employeeId", async (req, res, next) => {
 // Fetch multiple employees
 router.post("/many", async (req, res, next) => {
 	try {
-		const { subDepartmentId } = req.body;
-		const subDepartment = await SubDepartment.findById(subDepartmentId);
-		const employees = await Employee.find(
-			{ _id: { $in: subDepartment.employees } },
-			{ __v: false }
-		);
+		const { subDepartmentId, subDepartmentIds, departmentIds } = req.body;
+		let employees = [];
+
+		if (subDepartmentId) {
+			const subDepartment = await SubDepartment.findById(subDepartmentId);
+			employees = await Employee.find(
+				{ _id: { $in: subDepartment.employees } },
+				{ __v: false }
+			);
+		} else if (subDepartmentIds) {
+			employees = await Employee.find(
+				{ subDepartments: { $in: subDepartmentIds } },
+				{ __v: false }
+			);
+		} else if (departmentIds) {
+			employees = await Employee.find(
+				{ departments: { $in: departmentIds } },
+				{ __v: false }
+			);
+		}
+
 		return res.json({
 			success: true,
 			message: "Successfully fetched all the employees",

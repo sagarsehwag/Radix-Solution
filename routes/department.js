@@ -191,9 +191,8 @@ router.post("/subdepartment/many", async (req, res, next) => {
 				{ __v: false, employees: false }
 			);
 		} else {
-			const department = await Department.findById(departmentId);
 			subDepartments = await SubDepartment.find(
-				{ _id: { $in: department.subDepartments } },
+				{ department: departmentId },
 				{ __v: false, employees: false }
 			);
 		}
@@ -268,7 +267,6 @@ router.post("/subdepartment", async (req, res, next) => {
 router.put("/subdepartment", async (req, res, next) => {
 	try {
 		let { id, name, departmentId } = req.body;
-		console.log();
 
 		const label = name;
 		name = name

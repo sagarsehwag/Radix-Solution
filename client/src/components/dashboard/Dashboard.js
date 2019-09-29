@@ -163,18 +163,18 @@ const Dashboard = ({
 				</table>
 
 				<nav aria-label="Page navigation example">
-					<ul class="pagination">
+					<ul className="pagination">
 						{page > 1 ? (
-							<li class="page-item">
-								<Link onClick={decPage} class="page-link">
+							<li className="page-item">
+								<Link onClick={decPage} className="page-link">
 									Previous
 								</Link>
 							</li>
 						) : (
 							""
 						)}
-						<li class="page-item">
-							<Link onClick={incPage} class="page-link">
+						<li className="page-item">
+							<Link to="#" onClick={incPage} className="page-link">
 								Next
 							</Link>
 						</li>

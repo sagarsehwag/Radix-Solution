@@ -4,12 +4,16 @@ import setAlert from "./alert";
 import { GET_EMPLOYEE, GET_EMPLOYEES, CLEAR_EMPLOYEE, DELETE_EMPLOYEE } from "./types";
 
 // Load all the subdepartments
-export const loadEmployees = (subDepartmentId, subDepartmentIds) => {
+export const loadEmployees = (subDepartmentId, subDepartmentIds, departmentIds) => {
 	return async (dispatch) => {
 		try {
 			const {
 				data: { employees }
-			} = await axios.post("/employee/many", { subDepartmentId });
+			} = await axios.post("/employee/many", {
+				subDepartmentId,
+				subDepartmentIds,
+				departmentIds
+			});
 			dispatch({ type: GET_EMPLOYEES, payload: employees });
 		} catch (error) {
 			dispatch({ type: CLEAR_EMPLOYEE });

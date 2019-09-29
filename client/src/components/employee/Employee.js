@@ -19,8 +19,8 @@ const EditEmployee = ({
 	employee: { employees }
 }) => {
 	const [formData, setFormData] = useState({
-		subDepartmentArray: new Set(),
-		departmentArray: new Set()
+		subDepartmentArray: [],
+		departmentArray: []
 	});
 	const { departmentArray, subDepartmentArray } = formData;
 
@@ -29,12 +29,13 @@ const EditEmployee = ({
 	}, [loadDepartments]);
 
 	useEffect(() => {
-		if (departmentArray.length > 0) loadSubDepartments(null, [...departmentArray]);
+		if (departmentArray.length > 0) loadSubDepartments(null, departmentArray);
 	}, [departmentArray, loadSubDepartments]);
 
 	useEffect(() => {
-		if (subDepartmentArray.length > 0) loadEmployees();
-	}, [subDepartmentArray, loadEmployees]);
+		if (subDepartmentArray.length > 0) loadEmployees(null, subDepartmentArray, null);
+		else if (departmentArray.length > 0) loadEmployees(null, null, departmentArray);
+	}, [departmentArray, subDepartmentArray, loadEmployees]);
 
 	if (loading) {
 		return <Spinner />;
@@ -62,9 +63,7 @@ const EditEmployee = ({
 									departmentArray: selectedOption.map(({ value }) => value)
 								});
 						}}
-						options={departments.map(({ label, _id }) => {
-							return { label, value: _id };
-						})}
+						options={departments.map(({ label, _id }) => ({ label, value: _id }))}
 						isMulti
 					/>
 
@@ -80,9 +79,7 @@ const EditEmployee = ({
 									subDepartmentArray: selectedOption.map(({ value }) => value)
 								});
 						}}
-						options={subDepartments.map(({ label, _id }) => {
-							return { label, value: _id };
-						})}
+						options={subDepartments.map(({ label, _id }) => ({ label, value: _id }))}
 						isMulti
 					/>
 				</form>
