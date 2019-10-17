@@ -1,5 +1,4 @@
 const express = require("express");
-const config = require("config");
 
 const app = express();
 require("./startup/config")();
@@ -8,8 +7,4 @@ require("./startup/cors")(app);
 require("./startup/db")();
 require("./startup/routes")(app);
 require("./startup/production")(app);
-
-const port = process.env.PORT || config.get("port");
-app.listen(port, () => {
-	console.log(`Server Started on ${port}`);
-});
+require("./startup/listen")(app);
