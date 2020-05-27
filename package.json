@@ -18,7 +18,7 @@
   "author": "sagarsehwag",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^4.0.1",
     "config": "^3.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
